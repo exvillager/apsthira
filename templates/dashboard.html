@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Apsthira</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.3);
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient background glow */
+        .glow-blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary-glow) 0%, rgba(0,0,0,0) 70%);
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+            pointer-events: none;
+            animation: float 20s infinite alternate;
+        }
+
+        .blob-1 { top: -200px; left: -200px; }
+        .blob-2 { bottom: -200px; right: -200px; background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, rgba(0,0,0,0) 70%); }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.15); }
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 40px;
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            z-index: 50;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .logo-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .username-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .btn-logout {
+            background: none;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        /* Layout */
+        .dashboard-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 1fr 1.8fr;
+            gap: 32px;
+            z-index: 10;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            height: fit-content;
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #d1d5db;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper span.prefix {
+            position: absolute;
+            left: 16px;
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .has-prefix {
+            padding-left: 170px;
+        }
+
+        /* Dropzone */
+        .dropzone {
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 30px 16px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.01);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dropzone:hover, .dropzone.dragover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .dropzone svg {
+            width: 40px;
+            height: 40px;
+            color: var(--text-muted);
+        }
+
+        .file-info {
+            display: none;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            margin-top: 10px;
+        }
+
+        .file-info span {
+            font-size: 0.85rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 80%;
+        }
+
+        .file-info button {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 10px var(--primary-glow);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Resumes List */
+        .resumes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .resume-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .resume-item:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .resume-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .resume-slug {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #a5b4fc;
+            text-decoration: none;
+        }
+
+        .resume-slug:hover {
+            text-decoration: underline;
+        }
+
+        .resume-filename {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .resume-date {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .resume-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #e2e8f0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-action.btn-copy-link:hover {
+            border-color: var(--primary);
+            color: #a5b4fc;
+        }
+
+        .btn-action.btn-edit:hover {
+            border-color: var(--success);
+            color: #34d399;
+        }
+
+        .btn-action.btn-delete {
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .btn-action.btn-delete:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+            color: #fff;
+        }
+
+        /* Alert/Toast */
+        .alert {
+            display: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #a7f3d0;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Update Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(8, 10, 15, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 440px;
+            padding: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title { font-size: 1.3rem; font-weight: 600; }
+        
+        .btn-close-modal {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--success);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            z-index: 300;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-blob blob-1"></div>
+    <div class="glow-blob blob-2"></div>
+
+    <nav>
+        <div class="logo-section">
+            <div class="logo-badge">A</div>
+            <div class="logo-title">Apsthira</div>
+        </div>
+        <div class="nav-user">
+            <span class="username-badge">👋 {{.Username}}</span>
+            <form action="/logout" method="POST" style="margin: 0;">
+                <button type="submit" class="btn-logout">Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Left: Upload New Resume -->
+        <div class="card">
+            <h2>Create Resume Link</h2>
+            <div id="upload-alert" class="alert alert-danger"></div>
+
+            <form id="upload-form">
+                <div class="form-group">
+                    <label for="slug">Custom Link Slug</label>
+                    <div class="input-wrapper">
+                        <span class="prefix" id="slug-prefix">host/r/</span>
+                        <input type="text" id="slug" name="slug" class="form-control has-prefix" placeholder="johndoe" required pattern="^[a-zA-Z0-9-_]{3,30}$" title="3-30 characters, alphanumeric, dashes or underscores">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Select PDF Resume</label>
+                    <div class="dropzone" id="dropzone-upload">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                        <p class="main-text">Drag & drop resume PDF</p>
+                        <p class="sub-text">Max 10MB</p>
+                        <input type="file" id="upload-file-input" name="resume" accept="application/pdf" style="display: none;">
+                    </div>
+                    <div class="file-info" id="upload-file-info">
+                        <span id="upload-file-name">filename.pdf</span>
+                        <button type="button" id="btn-remove-upload-file">&times;</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btn-upload-submit">
+                    <div class="spinner" id="btn-upload-spinner"></div>
+                    <span id="btn-upload-text">Generate Static Link</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Right: Your Resumes -->
+        <div class="card" style="min-height: 400px; display: flex; flex-direction: column;">
+            <h2>Your Active Links</h2>
+            <div id="list-alert" class="alert"></div>
+
+            <div class="resumes-list" id="resumes-list">
+                {{if not .Resumes}}
+                <div class="empty-state">
+                    You haven't uploaded any resumes yet. Use the panel on the left to get started!
+                </div>
+                {{else}}
+                    {{range .Resumes}}
+                    <div class="resume-item" id="item-{{.Slug}}">
+                        <div class="resume-info">
+                            <a href="/r/{{.Slug}}" target="_blank" class="resume-slug">/r/{{.Slug}}</a>
+                            <span class="resume-filename" id="filename-{{.Slug}}">{{.OriginalFilename}}</span>
+                            <span class="resume-date" id="date-{{.Slug}}">Updated: {{.UpdatedAt.Format "Jan 02, 2006, 03:04 PM"}}</span>
+                        </div>
+                        <div class="resume-actions">
+                            <button class="btn-action btn-copy-link" onclick="copyLink('{{.Slug}}')">Copy</button>
+                            <button class="btn-action btn-edit" onclick="openUpdateModal('{{.Slug}}')">Replace</button>
+                            <button class="btn-action btn-delete" onclick="deleteResume('{{.Slug}}')">Delete</button>
+                        </div>
+                    </div>
+                    {{end}}
+                {{end}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Replace/Update Modal -->
+    <div class="modal-overlay" id="update-modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Replace PDF: <span id="modal-slug-title" style="color: #a5b4fc;">slug</span></h3>
+                <button class="btn-close-modal" id="btn-close-modal">&times;</button>
+            </div>
+            
+            <div id="modal-alert" class="alert alert-danger"></div>
+
+            <form id="update-form">
+                <input type="hidden" id="modal-slug" name="slug">
+                
+                <div class="form-group">
+                    <label>Select New PDF file</label>
+                    <div class="dropzone" id="dropzone-update">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                        <p class="main-text">Drag & drop new resume PDF</p>
+                        <p class="sub-text">Max size 10MB</p>
+                        <input type="file" id="update-file-input" name="resume" accept="application/pdf" style="display: none;">
+                    </div>
+                    <div class="file-info" id="update-file-info">
+                        <span id="update-file-name">new_filename.pdf</span>
+                        <button type="button" id="btn-remove-update-file">&times;</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btn-update-submit">
+                    <div class="spinner" id="btn-update-spinner"></div>
+                    <span id="btn-update-text">Upload Replacement</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Copied to clipboard!</div>
+
+    <script>
+        // Set dynamic domain prefix
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+        document.getElementById('slug-prefix').innerText = `${host}/r/`;
+
+        // Upload Form files
+        const dropzoneUpload = document.getElementById('dropzone-upload');
+        const uploadFileInput = document.getElementById('upload-file-input');
+        const uploadFileInfo = document.getElementById('upload-file-info');
+        const uploadFileName = document.getElementById('upload-file-name');
+        const btnRemoveUploadFile = document.getElementById('btn-remove-upload-file');
+        let uploadFile = null;
+
+        // Update Form files
+        const dropzoneUpdate = document.getElementById('dropzone-update');
+        const updateFileInput = document.getElementById('update-file-input');
+        const updateFileInfo = document.getElementById('update-file-info');
+        const updateFileName = document.getElementById('update-file-name');
+        const btnRemoveUpdateFile = document.getElementById('btn-remove-update-file');
+        let updateFile = null;
+
+        // Modals
+        const updateModalOverlay = document.getElementById('update-modal-overlay');
+        const btnCloseModal = document.getElementById('btn-close-modal');
+        const modalSlug = document.getElementById('modal-slug');
+        const modalSlugTitle = document.getElementById('modal-slug-title');
+
+        // General alerts
+        const uploadAlert = document.getElementById('upload-alert');
+        const listAlert = document.getElementById('list-alert');
+        const modalAlert = document.getElementById('modal-alert');
+        const toast = document.getElementById('toast');
+
+        // Sanitizer slug input
+        const slugInput = document.getElementById('slug');
+        slugInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^a-zA-Z0-9-_]/g, '').toLowerCase();
+        });
+
+        // ------------------ File Handler Helpers ------------------
+        function setupDropzone(dropzone, fileInput, fileInfo, fileName, onSelect) {
+            ['dragenter', 'dragover'].forEach(name => {
+                dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+            });
+            ['dragleave', 'drop'].forEach(name => {
+                dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); });
+            });
+            dropzone.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if(files.length > 0) processFile(files[0]);
+            });
+            dropzone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                if(e.target.files.length > 0) processFile(e.target.files[0]);
+            });
+
+            function processFile(file) {
+                if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+                    alert('Error: Only PDF resumes are supported.');
+                    return;
+                }
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('Error: PDF exceeds 10MB limit.');
+                    return;
+                }
+                fileName.innerText = `${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+                fileInfo.style.display = 'flex';
+                dropzone.style.display = 'none';
+                onSelect(file);
+            }
+        }
+
+        setupDropzone(dropzoneUpload, uploadFileInput, uploadFileInfo, uploadFileName, (file) => uploadFile = file);
+        setupDropzone(dropzoneUpdate, updateFileInput, updateFileInfo, updateFileName, (file) => updateFile = file);
+
+        btnRemoveUploadFile.addEventListener('click', (e) => {
+            e.stopPropagation();
+            uploadFile = null;
+            uploadFileInput.value = '';
+            uploadFileInfo.style.display = 'none';
+            dropzoneUpload.style.display = 'flex';
+        });
+
+        btnRemoveUpdateFile.addEventListener('click', (e) => {
+            e.stopPropagation();
+            updateFile = null;
+            updateFileInput.value = '';
+            updateFileInfo.style.display = 'none';
+            dropzoneUpdate.style.display = 'flex';
+        });
+
+        // ------------------ Actions ------------------
+        function copyLink(slug) {
+            const url = `${protocol}//${host}/r/${slug}`;
+            navigator.clipboard.writeText(url).then(() => {
+                toast.innerText = 'Link copied to clipboard!';
+                toast.style.display = 'block';
+                setTimeout(() => toast.style.display = 'none', 2000);
+            });
+        }
+
+        // Create/Upload Submission
+        const uploadForm = document.getElementById('upload-form');
+        const btnUploadSubmit = document.getElementById('btn-upload-submit');
+        const btnUploadSpinner = document.getElementById('btn-upload-spinner');
+        const btnUploadText = document.getElementById('btn-upload-text');
+
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            uploadAlert.style.display = 'none';
+
+            if (!uploadFile) {
+                uploadAlert.innerText = 'Please select a PDF resume file.';
+                uploadAlert.style.display = 'block';
+                return;
+            }
+
+            btnUploadSubmit.disabled = true;
+            btnUploadSpinner.style.display = 'block';
+            btnUploadText.innerText = 'Uploading...';
+
+            const formData = new FormData();
+            formData.append('slug', slugInput.value.trim());
+            formData.append('resume', uploadFile);
+
+            try {
+                const res = await fetch('/upload', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Upload failed');
+
+                // Success - reload page to refresh list
+                window.location.reload();
+            } catch (err) {
+                uploadAlert.innerText = err.message;
+                uploadAlert.style.display = 'block';
+                btnUploadSubmit.disabled = false;
+                btnUploadSpinner.style.display = 'none';
+                btnUploadText.innerText = 'Generate Static Link';
+            }
+        });
+
+        // Delete Resume
+        async function deleteResume(slug) {
+            if (!confirm(`Are you sure you want to delete the resume "/r/${slug}"? This action cannot be undone.`)) return;
+
+            try {
+                const res = await fetch(`/r/${slug}/delete`, { method: 'POST' });
+                if (!res.ok) {
+                    const data = await res.json();
+                    throw new Error(data.error || 'Delete failed');
+                }
+                
+                // Remove item from UI
+                const item = document.getElementById(`item-${slug}`);
+                if (item) item.remove();
+
+                // If empty list, refresh to show empty state
+                const list = document.getElementById('resumes-list');
+                if (list.children.length === 0) {
+                    window.location.reload();
+                }
+
+                toast.innerText = 'Resume deleted successfully';
+                toast.style.display = 'block';
+                setTimeout(() => toast.style.display = 'none', 2000);
+            } catch (err) {
+                alert(`Error deleting resume: ${err.message}`);
+            }
+        }
+
+        // Modal Update Actions
+        function openUpdateModal(slug) {
+            modalSlug.value = slug;
+            modalSlugTitle.innerText = `/r/${slug}`;
+            modalAlert.style.display = 'none';
+            
+            // reset file info
+            updateFile = null;
+            updateFileInput.value = '';
+            updateFileInfo.style.display = 'none';
+            dropzoneUpdate.style.display = 'flex';
+
+            updateModalOverlay.classList.add('open');
+        }
+
+        function closeUpdateModal() {
+            updateModalOverlay.classList.remove('open');
+        }
+
+        btnCloseModal.addEventListener('click', closeUpdateModal);
+        updateModalOverlay.addEventListener('click', (e) => {
+            if (e.target === updateModalOverlay) closeUpdateModal();
+        });
+
+        const updateForm = document.getElementById('update-form');
+        const btnUpdateSubmit = document.getElementById('btn-update-submit');
+        const btnUpdateSpinner = document.getElementById('btn-update-spinner');
+        const btnUpdateText = document.getElementById('btn-update-text');
+
+        updateForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            modalAlert.style.display = 'none';
+
+            if (!updateFile) {
+                modalAlert.innerText = 'Please select a new PDF file.';
+                modalAlert.style.display = 'block';
+                return;
+            }
+
+            btnUpdateSubmit.disabled = true;
+            btnUpdateSpinner.style.display = 'block';
+            btnUpdateText.innerText = 'Uploading...';
+
+            const slug = modalSlug.value;
+            const formData = new FormData();
+            formData.append('resume', updateFile);
+
+            try {
+                const res = await fetch(`/r/${slug}/update`, { method: 'POST', body: formData });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Update failed');
+
+                // Success: Close modal, update dashboard UI item details
+                closeUpdateModal();
+                
+                const fnEl = document.getElementById(`filename-${slug}`);
+                if (fnEl) fnEl.innerText = data.filename;
+
+                const dateEl = document.getElementById(`date-${slug}`);
+                if (dateEl) {
+                    const formatted = new Date(data.updated_at).toLocaleString([], {
+                        month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                    });
+                    dateEl.innerText = `Updated: ${formatted}`;
+                }
+
+                toast.innerText = 'Resume replaced successfully!';
+                toast.style.display = 'block';
+                setTimeout(() => toast.style.display = 'none', 2000);
+            } catch (err) {
+                modalAlert.innerText = err.message;
+                modalAlert.style.display = 'block';
+            } finally {
+                btnUpdateSubmit.disabled = false;
+                btnUpdateSpinner.style.display = 'none';
+                btnUpdateText.innerText = 'Upload Replacement';
+            }
+        });
+    </script>
+</body>
+</html>
