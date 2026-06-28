@@ -265,3 +265,31 @@ func (db *DB) DeleteResume(slug string) error {
 	_, err := db.conn.Exec(query, slug)
 	return err
 }
+
+func (db *DB) DeleteUserAndResources(userID int64) error {
+	tx, err := db.conn.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	// 1. Delete all resumes associated with the user
+	_, err = tx.Exec(`DELETE FROM resumes WHERE user_id = ?`, userID)
+	if err != nil {
+		return err
+	}
+
+	// 2. Delete all sessions associated with the user
+	_, err = tx.Exec(`DELETE FROM sessions WHERE user_id = ?`, userID)
+	if err != nil {
+		return err
+	}
+
+	// 3. Delete the user
+	_, err = tx.Exec(`DELETE FROM users WHERE id = ?`, userID)
+	if err != nil {
+		return err
+	}
+
+	return tx.Commit()
+}

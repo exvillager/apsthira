@@ -134,6 +134,25 @@
             color: #fff;
         }
 
+        .btn-delete-account {
+            background: none;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            background-color: rgba(239, 68, 68, 0.05);
+            color: #fca5a5;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete-account:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        }
+
         /* Layout */
         .dashboard-container {
             max-width: 1200px;
@@ -509,6 +528,7 @@
         </div>
         <div class="nav-user">
             <span class="username-badge">👋 {{.Username}}</span>
+            <button type="button" class="btn-delete-account" id="btn-open-delete-acc">Delete Account</button>
             <form action="/logout" method="POST" style="margin: 0;">
                 <button type="submit" class="btn-logout">Logout</button>
             </form>
@@ -579,6 +599,38 @@
                     </div>
                     {{end}}
                 {{end}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div class="modal-overlay" id="delete-acc-modal-overlay">
+        <div class="modal" style="border-color: rgba(239, 68, 68, 0.4); max-width: 420px;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: #fca5a5;">⚠️ Delete Account</h3>
+                <button class="btn-close-modal" id="btn-close-delete-acc">&times;</button>
+            </div>
+            
+            <div id="delete-acc-alert" class="alert alert-danger" style="display: none;"></div>
+
+            <div style="margin-bottom: 24px; line-height: 1.6; font-size: 0.95rem; color: #e2e8f0;">
+                <p>This action is <strong>irreversible</strong>.</p>
+                <p style="margin-top: 10px;">By deleting your account, you will permanently erase:
+                    <ul style="margin-left: 20px; margin-top: 8px; color: var(--text-muted);">
+                        <li>Your user profile and login access.</li>
+                        <li>All your active resume links.</li>
+                        <li>All resume PDF files from Cloudflare R2 storage.</li>
+                    </ul>
+                </p>
+                <p style="margin-top: 12px; font-weight: 500; color: #fca5a5;">Please click the button below again to confirm account deletion.</p>
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+                <button type="button" class="btn-submit" id="btn-confirm-delete-acc" style="background: linear-gradient(135deg, var(--danger) 0%, #b91c1c 100%); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);">
+                    <div class="spinner" id="delete-acc-spinner"></div>
+                    <span id="delete-acc-btn-text">Permanently Delete My Account</span>
+                </button>
+                <button type="button" class="btn-action" id="btn-cancel-delete-acc" style="padding: 12px 20px; border-radius: 10px; font-size: 0.95rem; font-weight: 500;">Cancel</button>
             </div>
         </div>
     </div>
@@ -869,6 +921,58 @@
                 btnUpdateSubmit.disabled = false;
                 btnUpdateSpinner.style.display = 'none';
                 btnUpdateText.innerText = 'Upload Replacement';
+            }
+        });
+
+        // ------------------ Delete Account Flow ------------------
+        const btnOpenDeleteAcc = document.getElementById('btn-open-delete-acc');
+        const deleteAccModalOverlay = document.getElementById('delete-acc-modal-overlay');
+        const btnCloseDeleteAcc = document.getElementById('btn-close-delete-acc');
+        const btnCancelDeleteAcc = document.getElementById('btn-cancel-delete-acc');
+        const btnConfirmDeleteAcc = document.getElementById('btn-confirm-delete-acc');
+        const deleteAccSpinner = document.getElementById('delete-acc-spinner');
+        const deleteAccBtnText = document.getElementById('delete-acc-btn-text');
+        const deleteAccAlert = document.getElementById('delete-acc-alert');
+
+        btnOpenDeleteAcc.addEventListener('click', () => {
+            deleteAccAlert.style.display = 'none';
+            deleteAccModalOverlay.classList.add('open');
+        });
+
+        function closeDeleteAccModal() {
+            deleteAccModalOverlay.classList.remove('open');
+        }
+
+        btnCloseDeleteAcc.addEventListener('click', closeDeleteAccModal);
+        btnCancelDeleteAcc.addEventListener('click', closeDeleteAccModal);
+        deleteAccModalOverlay.addEventListener('click', (e) => {
+            if (e.target === deleteAccModalOverlay) closeDeleteAccModal();
+        });
+
+        btnConfirmDeleteAcc.addEventListener('click', async () => {
+            deleteAccAlert.style.display = 'none';
+            
+            btnConfirmDeleteAcc.disabled = true;
+            deleteAccSpinner.style.display = 'block';
+            deleteAccBtnText.innerText = 'Deleting Account...';
+
+            try {
+                const res = await fetch('/delete-account', { method: 'POST' });
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    throw new Error(data.error || 'Failed to delete account.');
+                }
+
+                // Redirect to landing page on successful deletion
+                window.location.href = '/';
+            } catch (err) {
+                deleteAccAlert.innerText = err.message;
+                deleteAccAlert.style.display = 'block';
+                
+                btnConfirmDeleteAcc.disabled = false;
+                deleteAccSpinner.style.display = 'none';
+                deleteAccBtnText.innerText = 'Permanently Delete My Account';
             }
         });
     </script>

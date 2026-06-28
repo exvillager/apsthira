@@ -28,7 +28,7 @@ The PDF resumes are stored in Cloudflare R2 storage and streamed securely throug
 
 ## Tech Stack
 
-- **Backend**: Go (using standard library `net/http` router)
+- **Backend**: Go (using custom lightweight **nanoServe** router)
 - **Database**: SQLite3 (managed automatically, requires no setup)
 - **Storage**: Cloudflare R2 (S3-compatible)
 - **Frontend**: HTML5, Vanilla JS, CSS3 (glassmorphic dark theme)
