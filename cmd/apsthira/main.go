@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/exvillager/nanoserve"
 	"github.com/joho/godotenv"
@@ -90,6 +91,32 @@ func main() {
 	}
 	defer database.Close()
 	slog.Info("database connected", "engine", database.Driver())
+
+	// Start background auto-sync worker if using SQLite locally and Supabase URL is set
+	supabaseURL := os.Getenv("SUPABASE_DB_URL")
+	if supabaseURL == "" {
+		supabaseURL = os.Getenv("DATABASE_URL")
+	}
+	if supabaseURL != "" && !isPostgres {
+		slog.Info("sync: starting background auto-sync worker (every 24 hours)")
+		go func() {
+			// Wait 5 seconds after server startup before running the first sync
+			time.Sleep(5 * time.Second)
+			slog.Info("sync: running startup auto-sync...")
+			if err := db.RunAutoSync(dbConnStr, supabaseURL); err != nil {
+				slog.Error("sync: startup auto-sync failed", "error", err)
+			}
+
+			ticker := time.NewTicker(24 * time.Hour)
+			defer ticker.Stop()
+			for range ticker.C {
+				slog.Info("sync: running scheduled daily auto-sync...")
+				if err := db.RunAutoSync(dbConnStr, supabaseURL); err != nil {
+					slog.Error("sync: scheduled auto-sync failed", "error", err)
+				}
+			}
+		}()
+	}
 
 	var r2Client *storage.R2Client
 	if r2AccountID != "" {
