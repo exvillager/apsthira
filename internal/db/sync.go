@@ -48,6 +48,130 @@ func ensureSQLiteSchema(db *sql.DB) error {
 	return err
 }
 
+func parseTimeFallback(tStr string) time.Time {
+	tStr = strings.TrimSpace(tStr)
+	layouts := []string{
+		time.RFC3339,
+		time.RFC3339Nano,
+		"2006-01-02 15:04:05.999999999 -0700 MST",
+		"2006-01-02 15:04:05.999999999 -0700",
+		"2006-01-02 15:04:05.999999999-07:00",
+		"2006-01-02 15:04:05.999999999",
+		"2006-01-02 15:04:05.999999-07",
+		"2006-01-02 15:04:05.999999",
+		"2006-01-02 15:04:05-0700",
+		"2006-01-02 15:04:05-07",
+		"2006-01-02T15:04:05Z",
+		"2006-01-02 15:04:05",
+	}
+	for _, layout := range layouts {
+		if parsedVal, err := time.Parse(layout, tStr); err == nil {
+			return parsedVal
+		}
+	}
+	return time.Time{}
+}
+
+// RunAutoSync automatically determines the sync direction by checking if SQLite is empty or behind Supabase.
+func RunAutoSync(sqlitePath, postgresURL string) error {
+	slog.Info("sync: initiating auto-sync check...")
+
+	// 1. Connect to SQLite
+	sqliteDB, err := sql.Open("sqlite3", sqlitePath)
+	if err != nil {
+		return fmt.Errorf("failed to open local sqlite: %w", err)
+	}
+	defer sqliteDB.Close()
+
+	if err = ensureSQLiteSchema(sqliteDB); err != nil {
+		return fmt.Errorf("failed to verify sqlite schema: %w", err)
+	}
+
+	// 2. Connect to Postgres
+	postgresDB, err := sql.Open("postgres", postgresURL)
+	if err != nil {
+		return fmt.Errorf("failed to open remote postgres: %w", err)
+	}
+	defer postgresDB.Close()
+
+	// Ensure Postgres schema exists
+	schemaQuery := `
+	CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
+		username VARCHAR(255) UNIQUE NOT NULL,
+		password_hash VARCHAR(255) NOT NULL,
+		created_at TIMESTAMP NOT NULL
+	);
+	CREATE TABLE IF NOT EXISTS resumes (
+		id SERIAL PRIMARY KEY,
+		user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+		slug VARCHAR(255) UNIQUE NOT NULL,
+		r2_key VARCHAR(255) NOT NULL,
+		original_filename VARCHAR(255) NOT NULL,
+		created_at TIMESTAMP NOT NULL,
+		updated_at TIMESTAMP NOT NULL
+	);
+	`
+	if _, err = postgresDB.Exec(schemaQuery); err != nil {
+		return fmt.Errorf("failed to verify target schema: %w", err)
+	}
+
+	// Count users
+	var sqliteUserCount int
+	_ = sqliteDB.QueryRow("SELECT COUNT(*) FROM users").Scan(&sqliteUserCount)
+
+	var pgUserCount int
+	_ = postgresDB.QueryRow("SELECT COUNT(*) FROM users").Scan(&pgUserCount)
+
+	// Count resumes
+	var sqliteResumeCount int
+	_ = sqliteDB.QueryRow("SELECT COUNT(*) FROM resumes").Scan(&sqliteResumeCount)
+
+	var pgResumeCount int
+	_ = postgresDB.QueryRow("SELECT COUNT(*) FROM resumes").Scan(&pgResumeCount)
+
+	// Max updated_at
+	var sqliteMaxUpdated time.Time
+	var sqliteMaxUpdatedStr sql.NullString
+	_ = sqliteDB.QueryRow("SELECT MAX(updated_at) FROM resumes").Scan(&sqliteMaxUpdatedStr)
+	if sqliteMaxUpdatedStr.Valid && sqliteMaxUpdatedStr.String != "" {
+		sqliteMaxUpdated = parseTimeFallback(sqliteMaxUpdatedStr.String)
+	}
+
+	var pgMaxUpdated time.Time
+	_ = postgresDB.QueryRow("SELECT MAX(updated_at) FROM resumes").Scan(&pgMaxUpdated)
+
+	// Decide direction
+	pullNeeded := false
+	if sqliteUserCount == 0 && pgUserCount > 0 {
+		pullNeeded = true
+	} else if pgUserCount > sqliteUserCount {
+		pullNeeded = true
+	} else if pgResumeCount > sqliteResumeCount {
+		pullNeeded = true
+	} else if pgMaxUpdated.After(sqliteMaxUpdated) {
+		pullNeeded = true
+	}
+
+	// Close database connections before executing sync commands to release locks
+	sqliteDB.Close()
+	postgresDB.Close()
+
+	if pullNeeded {
+		slog.Info("sync: local SQLite is empty or behind Supabase Postgres, performing PULL sync from Supabase...", 
+			"sqlite_users", sqliteUserCount, "pg_users", pgUserCount,
+			"sqlite_resumes", sqliteResumeCount, "pg_resumes", pgResumeCount,
+			"sqlite_last_update", sqliteMaxUpdated, "pg_last_update", pgMaxUpdated)
+		return SyncPostgresToSQLite(sqlitePath, postgresURL)
+	} else {
+		slog.Info("sync: local SQLite is up-to-date or ahead, performing PUSH sync to Supabase...", 
+			"sqlite_users", sqliteUserCount, "pg_users", pgUserCount,
+			"sqlite_resumes", sqliteResumeCount, "pg_resumes", pgResumeCount,
+			"sqlite_last_update", sqliteMaxUpdated, "pg_last_update", pgMaxUpdated)
+		return SyncSQLiteToPostgres(sqlitePath, postgresURL)
+	}
+}
+
 // SyncSQLiteToPostgres replicates the entire local SQLite database to Supabase Postgres (Push).
 // It has a safety check to prevent accidental deletion of remote data if the local SQLite DB is empty.
 func SyncSQLiteToPostgres(sqlitePath, postgresURL string) error {
@@ -103,7 +227,6 @@ func SyncSQLiteToPostgres(sqlitePath, postgresURL string) error {
 
 	err = postgresDB.QueryRow("SELECT COUNT(*) FROM users").Scan(&pgUserCount)
 	if err != nil {
-		// If query fails for another reason, log it
 		slog.Warn("sync-push: could not count target users", "error", err)
 	}
 
@@ -200,7 +323,6 @@ func SyncSQLiteToPostgres(sqlitePath, postgresURL string) error {
 			slog.Info("sync-push: deleted orphaned users", "count", delCount)
 		}
 	} else {
-		// Safe only because we checked user count earlier
 		_, _ = tx.Exec("DELETE FROM users")
 	}
 
