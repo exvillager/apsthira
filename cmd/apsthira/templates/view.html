@@ -4,143 +4,156 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Slug}} - Resume | Apsthira</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #080b11;
-            --card-border: rgba(255, 255, 255, 0.08);
-            --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.35);
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-        }
-
-        * {
-            box-sizing: border-box;
+        body {
+            background-color: #008080;
             margin: 0;
             padding: 0;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 13px;
+            color: #000000;
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            position: relative;
         }
 
-        /* Top navigation header */
-        header {
+        .window {
+            background: #c0c0c0;
+            border: 1px solid #000000;
+            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080, 1px 1px 0px 0px #000000;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: #ffffff;
+            padding: 3px 4px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 32px;
-            background: rgba(13, 18, 30, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--card-border);
-            z-index: 100;
+            font-weight: bold;
+            font-size: 12px;
+            margin: 2px 2px 0 2px;
         }
 
-        .logo-section {
+        .title-bar-controls {
+            display: flex;
+            gap: 2px;
+        }
+
+        .title-bar-button {
+            width: 16px;
+            height: 14px;
+            background: #c0c0c0;
+            border: 1px solid #000000;
+            box-shadow: inset 1px 1px 0px 0px #ffffff, inset -1px -1px 0px 0px #808080;
             display: flex;
             align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: bold;
+            color: #000000;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .menu-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 8px;
+            font-size: 12px;
+            border-bottom: 1px solid #808080;
+            background: #c0c0c0;
+        }
+
+        .menu-items {
+            display: flex;
             gap: 12px;
         }
 
-        .logo-badge {
-            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+        .menu-items span {
+            color: #000000;
+            cursor: default;
+        }
+
+        .menu-items span::first-letter {
+            text-decoration: underline;
+        }
+
+        .metadata-items {
+            font-size: 11px;
+            color: #555555;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: #fff;
-            box-shadow: 0 4px 10px var(--primary-glow);
+            gap: 16px;
         }
 
-        .logo-title {
-            font-weight: 700;
-            font-size: 1.3rem;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .metadata-items span {
+            border-left: 1px solid #808080;
+            border-right: 1px solid #ffffff;
+            padding: 0 8px;
         }
 
-        .metadata-section {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .meta-item {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
-
-        .meta-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .meta-val {
-            font-size: 0.88rem;
-            font-weight: 500;
-            color: #e2e8f0;
-        }
-
-        /* PDF Viewer Layout */
         .viewer-container {
             flex-grow: 1;
-            position: relative;
-            background: #111827;
+            background: #808080;
+            padding: 4px;
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        .iframe-border {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #000000;
+            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080;
+            background: #ffffff;
         }
 
         iframe {
             width: 100%;
             height: 100%;
             border: none;
-            background: #1f2937;
+            background: #ffffff;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo-section">
-            <div class="logo-badge">A</div>
-            <div class="logo-title">Apsthira</div>
-        </div>
-        
-        <div class="metadata-section">
-            <div class="meta-item">
-                <span class="meta-label">Original File</span>
-                <span class="meta-val" id="header-filename">{{.OriginalFilename}}</span>
-            </div>
-            <div class="meta-item">
-                <span class="meta-label">Last Updated</span>
-                <span class="meta-val" id="header-updated">{{.UpdatedAt.Format "Jan 02, 2006 at 03:04 PM"}}</span>
+    <div class="window">
+        <div class="title-bar">
+            <div class="title-bar-text">{{.Slug}}.pdf - Acrobat Reader</div>
+            <div class="title-bar-controls">
+                <div class="title-bar-button">_</div>
+                <div class="title-bar-button">□</div>
+                <div class="title-bar-button">X</div>
             </div>
         </div>
-    </header>
+        <div class="menu-bar">
+            <div class="menu-items">
+                <span>File</span>
+                <span>Document</span>
+                <span>View</span>
+                <span>Window</span>
+                <span>Help</span>
+            </div>
+            
+            <div class="metadata-items">
+                <span>Source: {{.OriginalFilename}}</span>
+                <span>Updated: {{.UpdatedAt.Format "Jan 02, 2006 at 03:04 PM"}}</span>
+            </div>
+        </div>
 
-    <div class="viewer-container">
-        <!-- Securely loads the PDF from the raw streaming endpoint -->
-        <iframe src="/r/{{.Slug}}/raw" id="pdf-viewer"></iframe>
+        <div class="viewer-container">
+            <div class="iframe-border">
+                <!-- Securely loads the PDF from the raw streaming endpoint -->
+                <iframe src="/r/{{.Slug}}/raw" id="pdf-viewer"></iframe>
+            </div>
+        </div>
     </div>
 </body>
 </html>

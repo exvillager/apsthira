@@ -4,280 +4,226 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Apsthira</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: rgba(17, 24, 39, 0.7);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --primary-glow: rgba(99, 102, 241, 0.4);
-            --success: #10b981;
-            --success-glow: rgba(16, 185, 129, 0.3);
-            --danger: #ef4444;
-            --danger-hover: #dc2626;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-        }
-
-        * {
-            box-sizing: border-box;
+        body {
+            background-color: #008080; /* Teal desktop background */
             margin: 0;
             padding: 0;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 13px;
+            color: #000000;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
-            position: relative;
         }
 
-        /* Ambient background glow */
-        .glow-blob {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--primary-glow) 0%, rgba(0,0,0,0) 70%);
-            filter: blur(80px);
-            z-index: -1;
-            opacity: 0.4;
-            pointer-events: none;
-            animation: float 20s infinite alternate;
+        /* Main Window */
+        .window {
+            background: #c0c0c0;
+            border: 1px solid #000000;
+            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080, 1px 1px 0px 0px #000000;
+            display: flex;
+            flex-direction: column;
+            max-width: 1050px;
+            width: 95%;
+            margin: 20px auto;
+            flex-grow: 1;
         }
 
-        .blob-1 { top: -200px; left: -200px; }
-        .blob-2 { bottom: -200px; right: -200px; background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, rgba(0,0,0,0) 70%); }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(50px, 50px) scale(1.15); }
-        }
-
-        /* Navigation */
-        nav {
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: #ffffff;
+            padding: 3px 4px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 40px;
-            background: rgba(17, 24, 39, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--card-border);
-            z-index: 50;
+            font-weight: bold;
+            font-size: 12px;
+            margin: 2px 2px 0 2px;
         }
 
-        .logo-section {
+        .title-bar-text {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 6px;
         }
 
-        .logo-badge {
-            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+        .title-bar-controls {
+            display: flex;
+            gap: 2px;
+        }
+
+        .title-bar-button {
+            width: 16px;
+            height: 14px;
+            background: #c0c0c0;
+            border: 1px solid #000000;
+            box-shadow: inset 1px 1px 0px 0px #ffffff, inset -1px -1px 0px 0px #808080;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            color: #fff;
+            font-size: 9px;
+            font-weight: bold;
+            color: #000000;
+            cursor: pointer;
+            user-select: none;
         }
 
-        .logo-title {
-            font-weight: 700;
-            font-size: 1.3rem;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .title-bar-button:active {
+            box-shadow: inset 1px 1px 0px 0px #808080, inset -1px -1px 0px 0px #ffffff;
         }
 
-        .nav-user {
+        .menu-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 8px;
+            font-size: 12px;
+            border-bottom: 1px solid #808080;
+            background: #c0c0c0;
+        }
+
+        .menu-items {
+            display: flex;
+            gap: 12px;
+        }
+
+        .menu-items span {
+            cursor: default;
+        }
+
+        .menu-items span::first-letter {
+            text-decoration: underline;
+        }
+
+        .nav-actions {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 8px;
         }
 
-        .username-badge {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: #e2e8f0;
-            font-weight: 500;
+        /* 3D Outset Frame Panel */
+        .outset-panel {
+            background: #c0c0c0;
+            border: 1px solid #000000;
+            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080;
+            padding: 16px;
+            box-sizing: border-box;
         }
 
-        .btn-logout {
-            background: none;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: var(--danger);
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 0.88rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-logout:hover {
-            background: var(--danger);
-            color: #fff;
-        }
-
-        .btn-delete-account {
-            background: none;
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            background-color: rgba(239, 68, 68, 0.05);
-            color: #fca5a5;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 0.88rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-delete-account:hover {
-            background: var(--danger);
-            border-color: var(--danger);
-            color: #fff;
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
-        }
-
-        /* Layout */
-        .dashboard-container {
-            max-width: 1200px;
-            width: 100%;
-            margin: 40px auto;
-            padding: 0 24px;
+        /* Layout structure */
+        .workspace {
+            padding: 16px;
             display: grid;
-            grid-template-columns: 1fr 1.8fr;
-            gap: 32px;
-            z-index: 10;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 20px;
+            flex-grow: 1;
         }
 
-        @media (max-width: 900px) {
-            .dashboard-container {
+        @media (max-width: 768px) {
+            .workspace {
                 grid-template-columns: 1fr;
             }
         }
 
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            height: fit-content;
-        }
-
-        .card h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 24px;
-            background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .panel-title {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-bottom: 1px solid #808080;
+            padding-bottom: 4px;
         }
 
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 14px;
         }
 
         .form-group label {
             display: block;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #d1d5db;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
+            font-weight: bold;
         }
 
         .input-wrapper {
-            position: relative;
             display: flex;
             align-items: center;
+            background: #ffffff;
+            border: 1px solid #808080;
+            box-shadow: inset 1px 1px 0px 0px #000000, inset -1px -1px 0px 0px #ffffff;
         }
 
         .input-wrapper span.prefix {
-            position: absolute;
-            left: 16px;
-            color: var(--text-muted);
-            font-weight: 400;
-            font-size: 0.9rem;
+            padding-left: 8px;
+            color: #808080;
+            font-family: monospace;
+            font-size: 13px;
+            user-select: none;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            color: #fff;
-            font-size: 0.95rem;
+            background: #ffffff;
+            color: #000000;
+            border: 1px solid #808080;
+            box-shadow: inset 1px 1px 0px 0px #000000, inset -1px -1px 0px 0px #ffffff;
+            padding: 4px 6px;
             outline: none;
-            transition: all 0.2s ease;
+            box-sizing: border-box;
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 13px;
+        }
+
+        .input-wrapper .form-control {
+            border: none;
+            box-shadow: none;
+            padding-left: 4px;
         }
 
         .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-glow);
-        }
-
-        .has-prefix {
-            padding-left: 170px;
+            outline: 1px dotted #000000;
         }
 
         /* Dropzone */
         .dropzone {
-            border: 2px dashed rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 30px 16px;
+            border: 1px dashed #808080;
+            background: #ffffff;
+            padding: 24px 12px;
             text-align: center;
-            background: rgba(255, 255, 255, 0.01);
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
+            box-shadow: inset 1px 1px 0px 0px #e0e0e0;
         }
 
-        .dropzone:hover, .dropzone.dragover {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.05);
+        .dropzone:hover {
+            background: #f0f0f0;
         }
 
-        .dropzone svg {
-            width: 40px;
-            height: 40px;
-            color: var(--text-muted);
+        .dropzone .main-text {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .dropzone .sub-text {
+            font-size: 11px;
+            color: #808080;
         }
 
         .file-info {
             display: none;
-            width: 100%;
             align-items: center;
             justify-content: space-between;
-            background: rgba(99, 102, 241, 0.1);
-            padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            margin-top: 10px;
+            background: #ffffcc;
+            border: 1px solid #808080;
+            padding: 6px 10px;
+            margin-top: 8px;
         }
 
         .file-info span {
-            font-size: 0.85rem;
+            font-family: monospace;
+            font-size: 12px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -287,169 +233,166 @@
         .file-info button {
             background: none;
             border: none;
-            color: var(--danger);
+            color: #ff0000;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .btn {
+            background: #c0c0c0;
+            color: #000000;
+            border: 1px solid #000000;
+            box-shadow: inset 1px 1px 0px 0px #ffffff, inset -1px -1px 0px 0px #808080;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-family: Tahoma, Arial, sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            outline: none;
+        }
+
+        .btn:active {
+            box-shadow: inset 1px 1px 0px 0px #808080, inset -1px -1px 0px 0px #ffffff;
+        }
+
+        .btn:focus {
+            outline: 1px dotted #000000;
+            outline-offset: -3px;
         }
 
         .btn-submit {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 10px var(--primary-glow);
-            transition: all 0.2s ease;
+            font-weight: bold;
+            padding: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
 
-        .btn-submit:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.5);
+        .btn-logout {
+            padding: 2px 8px;
+            font-size: 11px;
         }
 
-        /* Resumes List */
-        .resumes-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+        .btn-delete-account {
+            color: #ff0000;
+            padding: 2px 8px;
+            font-size: 11px;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-muted);
-            font-style: italic;
+        /* Resumes List Table */
+        .resumes-table-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid #808080;
+            box-shadow: inset 1px 1px 0px 0px #000000, inset -1px -1px 0px 0px #ffffff;
+            background: #ffffff;
+            min-height: 300px;
         }
 
-        .resume-item {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.2s ease;
+        table.resumes-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 12px;
         }
 
-        .resume-item:hover {
-            border-color: rgba(99, 102, 241, 0.3);
-            background: rgba(255, 255, 255, 0.03);
+        table.resumes-table th {
+            background: #c0c0c0;
+            border-right: 1px solid #808080;
+            border-bottom: 1px solid #808080;
+            box-shadow: inset 1px 1px 0px 0px #ffffff;
+            padding: 4px 6px;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            user-select: none;
         }
 
-        .resume-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            min-width: 0;
+        table.resumes-table td {
+            padding: 6px;
+            border-right: 1px dotted #c0c0c0;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: middle;
         }
 
-        .resume-slug {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #a5b4fc;
-            text-decoration: none;
+        table.resumes-table tr:hover td {
+            background: #000080;
+            color: #ffffff;
         }
 
-        .resume-slug:hover {
+        table.resumes-table tr:hover td a {
+            color: #ffffff;
+        }
+
+        table.resumes-table td a {
+            color: #0000ee;
             text-decoration: underline;
-        }
-
-        .resume-filename {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .resume-date {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.3);
+            font-weight: bold;
         }
 
         .resume-actions {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .btn-action {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #e2e8f0;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
             gap: 4px;
         }
 
-        .btn-action:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-action.btn-copy-link:hover {
-            border-color: var(--primary);
-            color: #a5b4fc;
-        }
-
-        .btn-action.btn-edit:hover {
-            border-color: var(--success);
-            color: #34d399;
-        }
-
-        .btn-action.btn-delete {
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
+        .btn-action {
+            padding: 2px 6px;
+            font-size: 11px;
+            min-width: auto;
         }
 
         .btn-action.btn-delete:hover {
-            background: var(--danger);
-            border-color: var(--danger);
-            color: #fff;
+            color: #ff0000;
         }
 
-        /* Alert/Toast */
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            background: #c0c0c0;
+            border-top: 1px solid #808080;
+            padding: 2px;
+            gap: 4px;
+            font-size: 11px;
+            margin-top: auto;
+        }
+
+        .status-field {
+            border: 1px solid #808080;
+            box-shadow: inset 1px 1px 0px 0px #ffffff;
+            padding: 2px 6px;
+            flex-grow: 1;
+            background: #c0c0c0;
+            box-sizing: border-box;
+        }
+
+        .status-field.fixed {
+            flex-grow: 0;
+            min-width: 150px;
+        }
+
+        /* Alerts */
         .alert {
             display: none;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-
-        .alert-danger {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-        }
-
-        .alert-success {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            color: #a7f3d0;
+            background: #ffffe0;
+            border: 1px solid #808080;
+            box-shadow: inset 1px 1px 0px 0px #ffffff;
+            color: #ff0000;
+            padding: 8px;
+            margin-bottom: 12px;
+            font-size: 12px;
         }
 
         .spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: #fff;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            border-top-color: #000000;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             display: none;
@@ -457,16 +400,14 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Update Modal */
+        /* Dialogs / Modals */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(8, 10, 15, 0.85);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.2);
             display: none;
             justify-content: center;
             align-items: center;
@@ -476,166 +417,189 @@
         .modal-overlay.open { display: flex; }
 
         .modal {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
+            background: #c0c0c0;
+            border: 1px solid #000000;
+            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080, 2px 2px 10px rgba(0,0,0,0.5);
             width: 100%;
-            max-width: 440px;
-            padding: 32px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-width: 360px;
         }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .modal-title { font-size: 1.3rem; font-weight: 600; }
-        
-        .btn-close-modal {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            cursor: pointer;
+        .modal-body {
+            padding: 16px;
         }
 
         .toast {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--success);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: 500;
-            font-size: 0.9rem;
+            bottom: 30px;
+            right: 30px;
+            background: #ffffcc;
+            color: #000000;
+            border: 1px solid #000000;
+            box-shadow: inset 1px 1px 0px 0px #ffffff, 2px 2px 5px rgba(0,0,0,0.2);
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: bold;
             z-index: 300;
             display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 12px;
+            color: #808080;
+            font-size: 11px;
+            text-shadow: 1px 1px 0px #ffffff;
+        }
+
+        footer a {
+            color: #0000ee;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="glow-blob blob-1"></div>
-    <div class="glow-blob blob-2"></div>
-
-    <nav>
-        <div class="logo-section">
-            <div class="logo-badge">A</div>
-            <div class="logo-title">Apsthira</div>
-        </div>
-        <div class="nav-user">
-            <span class="username-badge">👋 {{.Username}}</span>
-            <button type="button" class="btn-delete-account" id="btn-open-delete-acc">Delete Account</button>
-            <form action="/logout" method="POST" style="margin: 0;">
-                <button type="submit" class="btn-logout">Logout</button>
-            </form>
-        </div>
-    </nav>
-
-    <div class="dashboard-container">
-        <!-- Left: Upload New Resume -->
-        <div class="card">
-            <h2>Create Resume Link</h2>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: -16px; margin-bottom: 20px;">Limit: 3 active links maximum</p>
-            <div id="upload-alert" class="alert alert-danger"></div>
-
-            <form id="upload-form">
-                <div class="form-group">
-                    <label for="slug">Custom Link Slug <span style="color: var(--text-muted); font-weight: 400;">(optional)</span></label>
-                    <div class="input-wrapper">
-                        <span class="prefix" id="slug-prefix">host/r/</span>
-                        <input type="text" id="slug" name="slug" class="form-control has-prefix" placeholder="leave blank for random" pattern="^[a-zA-Z0-9-_]{3,30}$" title="3-30 characters, alphanumeric, dashes or underscores">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Select PDF Resume</label>
-                    <div class="dropzone" id="dropzone-upload">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                        </svg>
-                        <p class="main-text">Drag & drop resume PDF</p>
-                        <p class="sub-text">Max 10MB</p>
-                        <input type="file" id="upload-file-input" name="resume" accept="application/pdf" style="display: none;">
-                    </div>
-                    <div class="file-info" id="upload-file-info">
-                        <span id="upload-file-name">filename.pdf</span>
-                        <button type="button" id="btn-remove-upload-file">&times;</button>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-submit" id="btn-upload-submit">
-                    <div class="spinner" id="btn-upload-spinner"></div>
-                    <span id="btn-upload-text">Generate Static Link</span>
-                </button>
-            </form>
-        </div>
-
-        <!-- Right: Your Resumes -->
-        <div class="card" style="min-height: 400px; display: flex; flex-direction: column;">
-            <h2>Your Active Links</h2>
-            <div id="list-alert" class="alert"></div>
-
-            <div class="resumes-list" id="resumes-list">
-                {{if not .Resumes}}
-                <div class="empty-state">
-                    You haven't uploaded any resumes yet. Use the panel on the left to get started!
-                </div>
-                {{else}}
-                    {{range .Resumes}}
-                    <div class="resume-item" id="item-{{.Slug}}">
-                        <div class="resume-info">
-                            <a href="/r/{{.Slug}}" target="_blank" class="resume-slug">/r/{{.Slug}}</a>
-                            <span class="resume-filename" id="filename-{{.Slug}}">{{.OriginalFilename}}</span>
-                            <span class="resume-date" id="date-{{.Slug}}">Updated: {{.UpdatedAt.Format "Jan 02, 2006, 03:04 PM"}}</span>
-                        </div>
-                        <div class="resume-actions">
-                            <button class="btn-action btn-copy-link" onclick="copyLink('{{.Slug}}')">Copy</button>
-                            <button class="btn-action btn-edit" onclick="openUpdateModal('{{.Slug}}')">Replace</button>
-                            <button class="btn-action btn-delete" onclick="deleteResume('{{.Slug}}')">Delete</button>
-                        </div>
-                    </div>
-                    {{end}}
-                {{end}}
+    <div class="window">
+        <div class="title-bar">
+            <div class="title-bar-text">Apsthira Resume Management Console</div>
+            <div class="title-bar-controls">
+                <div class="title-bar-button">_</div>
+                <div class="title-bar-button">□</div>
+                <div class="title-bar-button">X</div>
             </div>
+        </div>
+        <div class="menu-bar">
+            <div class="menu-items">
+                <span>File</span>
+                <span>Edit</span>
+                <span>Tools</span>
+                <span>Help</span>
+            </div>
+            <div class="nav-actions">
+                <button type="button" class="btn btn-delete-account" id="btn-open-delete-acc">Delete Account</button>
+                <form action="/logout" method="POST" style="margin: 0; display: inline;">
+                    <button type="submit" class="btn btn-logout">Logout</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="workspace">
+            <!-- Left: Create Resume Link -->
+            <div class="outset-panel">
+                <div class="panel-title">Create Resume Link</div>
+                <div id="upload-alert" class="alert"></div>
+
+                <form id="upload-form">
+                    <div class="form-group">
+                        <label for="slug">Custom Link Slug:</label>
+                        <div class="input-wrapper">
+                            <span class="prefix" id="slug-prefix">host/r/</span>
+                            <input type="text" id="slug" name="slug" class="form-control" placeholder="leave blank for random" pattern="^[a-zA-Z0-9-_]{3,30}$" title="3-30 characters, alphanumeric, dashes or underscores">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Select PDF Resume:</label>
+                        <div class="dropzone" id="dropzone-upload">
+                            <span class="main-text">Drag & drop resume PDF</span>
+                            <span class="sub-text">or click to browse. Max size 10MB</span>
+                            <input type="file" id="upload-file-input" name="resume" accept="application/pdf" style="display: none;">
+                        </div>
+                        <div class="file-info" id="upload-file-info">
+                            <span id="upload-file-name">filename.pdf</span>
+                            <button type="button" id="btn-remove-upload-file">&times;</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-submit" id="btn-upload-submit">
+                        <div class="spinner" id="btn-upload-spinner"></div>
+                        <span id="btn-upload-text">Generate Static Link</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right: Active Resumes -->
+            <div class="outset-panel" style="display: flex; flex-direction: column;">
+                <div class="panel-title">Active Database Links</div>
+                <div id="list-alert" class="alert"></div>
+
+                <div class="resumes-table-container">
+                    <table class="resumes-table">
+                        <thead>
+                            <tr>
+                                <th>Static URL</th>
+                                <th>Source Filename</th>
+                                <th>Last Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resumes-list">
+                            {{if not .Resumes}}
+                            <tr id="empty-row">
+                                <td colspan="4" style="text-align: center; padding: 24px; color: #808080; font-style: italic;">
+                                    No records found in database. Use the panel on the left to upload a new resume.
+                                </td>
+                            </tr>
+                            {{else}}
+                                {{range .Resumes}}
+                                <tr id="item-{{.Slug}}">
+                                    <td><a href="/r/{{.Slug}}" target="_blank">/r/{{.Slug}}</a></td>
+                                    <td id="filename-{{.Slug}}">{{.OriginalFilename}}</td>
+                                    <td id="date-{{.Slug}}">{{.UpdatedAt.Format "Jan 02, 2006, 03:04 PM"}}</td>
+                                    <td>
+                                        <div class="resume-actions">
+                                            <button class="btn btn-action" onclick="copyLink('{{.Slug}}')">Copy</button>
+                                            <button class="btn btn-action" onclick="openUpdateModal('{{.Slug}}')">Replace</button>
+                                            <button class="btn btn-action btn-delete" onclick="deleteResume('{{.Slug}}')">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {{end}}
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-field">Uploader Profile: {{.Username}}</div>
+            <div class="status-field fixed">Storage Limit: 3 Links Max</div>
+            <div class="status-field fixed">System Status: Connected</div>
         </div>
     </div>
 
-    <footer style="text-align: center; padding: 24px; color: rgba(255, 255, 255, 0.25); font-size: 0.85rem; font-weight: 300; margin-top: 40px; z-index: 10;">
-        &copy; 2026 Apsthira. Securely hosted via Cloudflare R2 & Go. | <a href="https://github.com/libsib/apsthira" target="_blank" style="color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#6366f1'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">GitHub</a>
+    <footer>
+        &copy; 2026 Apsthira. Securely hosted via Go & R2. | <a href="https://github.com/libsib/apsthira" target="_blank">GitHub</a>
     </footer>
 
     <!-- Delete Account Modal -->
     <div class="modal-overlay" id="delete-acc-modal-overlay">
-        <div class="modal" style="border-color: rgba(239, 68, 68, 0.4); max-width: 420px;">
-            <div class="modal-header">
-                <h3 class="modal-title" style="color: #fca5a5;">⚠️ Delete Account</h3>
-                <button class="btn-close-modal" id="btn-close-delete-acc">&times;</button>
+        <div class="modal">
+            <div class="title-bar">
+                <div class="title-bar-text">Warning: Delete Account</div>
+                <button class="title-bar-button" id="btn-close-delete-acc">X</button>
             </div>
-            
-            <div id="delete-acc-alert" class="alert alert-danger" style="display: none;"></div>
+            <div class="modal-body">
+                <div id="delete-acc-alert" class="alert"></div>
 
-            <div style="margin-bottom: 24px; line-height: 1.6; font-size: 0.95rem; color: #e2e8f0;">
-                <p>This action is <strong>irreversible</strong>.</p>
-                <p style="margin-top: 10px;">By deleting your account, you will permanently erase:
-                    <ul style="margin-left: 20px; margin-top: 8px; color: var(--text-muted);">
-                        <li>Your user profile and login access.</li>
-                        <li>All your active resume links.</li>
-                        <li>All resume PDF files from Cloudflare R2 storage.</li>
+                <div style="margin-bottom: 16px; line-height: 1.4;">
+                    <p><strong>This action is permanent and cannot be undone.</strong></p>
+                    <p style="margin-top: 8px;">Deleting your account will erase:</p>
+                    <ul style="margin-left: 16px; margin-top: 4px; color: #555555; padding-left: 0; list-style-type: square;">
+                        <li>User profile credentials</li>
+                        <li>All database resume paths</li>
+                        <li>All uploaded PDF files on R2</li>
                     </ul>
-                </p>
-                <p style="margin-top: 12px; font-weight: 500; color: #fca5a5;">Please click the button below again to confirm account deletion.</p>
-            </div>
+                </div>
 
-            <div style="display: flex; gap: 12px;">
-                <button type="button" class="btn-submit" id="btn-confirm-delete-acc" style="background: linear-gradient(135deg, var(--danger) 0%, #b91c1c 100%); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);">
-                    <div class="spinner" id="delete-acc-spinner"></div>
-                    <span id="delete-acc-btn-text">Permanently Delete My Account</span>
-                </button>
-                <button type="button" class="btn-action" id="btn-cancel-delete-acc" style="padding: 12px 20px; border-radius: 10px; font-size: 0.95rem; font-weight: 500;">Cancel</button>
+                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                    <button type="button" class="btn" id="btn-confirm-delete-acc" style="font-weight: bold; color: #ff0000;">
+                        <div class="spinner" id="delete-acc-spinner"></div>
+                        <span id="delete-acc-btn-text">OK (Delete)</span>
+                    </button>
+                    <button type="button" class="btn" id="btn-cancel-delete-acc">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
@@ -643,37 +607,38 @@
     <!-- Replace/Update Modal -->
     <div class="modal-overlay" id="update-modal-overlay">
         <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Replace PDF: <span id="modal-slug-title" style="color: #a5b4fc;">slug</span></h3>
-                <button class="btn-close-modal" id="btn-close-modal">&times;</button>
+            <div class="title-bar">
+                <div class="title-bar-text">Replace File: <span id="modal-slug-title">slug</span></div>
+                <button class="title-bar-button" id="btn-close-modal">X</button>
             </div>
-            
-            <div id="modal-alert" class="alert alert-danger"></div>
+            <div class="modal-body">
+                <div id="modal-alert" class="alert"></div>
 
-            <form id="update-form">
-                <input type="hidden" id="modal-slug" name="slug">
-                
-                <div class="form-group">
-                    <label>Select New PDF file</label>
-                    <div class="dropzone" id="dropzone-update">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                        </svg>
-                        <p class="main-text">Drag & drop new resume PDF</p>
-                        <p class="sub-text">Max size 10MB</p>
-                        <input type="file" id="update-file-input" name="resume" accept="application/pdf" style="display: none;">
+                <form id="update-form">
+                    <input type="hidden" id="modal-slug" name="slug">
+                    
+                    <div class="form-group">
+                        <label>Select New PDF file:</label>
+                        <div class="dropzone" id="dropzone-update">
+                            <span class="main-text">Drag & drop new resume PDF</span>
+                            <span class="sub-text">or click to browse. Max size 10MB</span>
+                            <input type="file" id="update-file-input" name="resume" accept="application/pdf" style="display: none;">
+                        </div>
+                        <div class="file-info" id="update-file-info">
+                            <span id="update-file-name">new_filename.pdf</span>
+                            <button type="button" id="btn-remove-update-file">&times;</button>
+                        </div>
                     </div>
-                    <div class="file-info" id="update-file-info">
-                        <span id="update-file-name">new_filename.pdf</span>
-                        <button type="button" id="btn-remove-update-file">&times;</button>
-                    </div>
-                </div>
 
-                <button type="submit" class="btn-submit" id="btn-update-submit">
-                    <div class="spinner" id="btn-update-spinner"></div>
-                    <span id="btn-update-text">Upload Replacement</span>
-                </button>
-            </form>
+                    <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;">
+                        <button type="submit" class="btn" id="btn-update-submit" style="font-weight: bold;">
+                            <div class="spinner" id="btn-update-spinner"></div>
+                            <span id="btn-update-text">Upload Replacement</span>
+                        </button>
+                        <button type="button" class="btn" onclick="closeUpdateModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -722,10 +687,12 @@
         // ------------------ File Handler Helpers ------------------
         function setupDropzone(dropzone, fileInput, fileInfo, fileName, onSelect) {
             ['dragenter', 'dragover'].forEach(name => {
-                dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+                dropzone.addEventListener('dragenter', (e) => { e.preventDefault(); dropzone.style.background = '#f0f0f0'; });
+                dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.style.background = '#f0f0f0'; });
             });
             ['dragleave', 'drop'].forEach(name => {
-                dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); });
+                dropzone.addEventListener('dragleave', (e) => { e.preventDefault(); dropzone.style.background = '#ffffff'; });
+                dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.style.background = '#ffffff'; });
             });
             dropzone.addEventListener('drop', (e) => {
                 const files = e.dataTransfer.files;
@@ -760,7 +727,7 @@
             uploadFile = null;
             uploadFileInput.value = '';
             uploadFileInfo.style.display = 'none';
-            dropzoneUpload.style.display = 'flex';
+            dropzoneUpload.style.display = 'block';
         });
 
         btnRemoveUpdateFile.addEventListener('click', (e) => {
@@ -768,7 +735,7 @@
             updateFile = null;
             updateFileInput.value = '';
             updateFileInfo.style.display = 'none';
-            dropzoneUpdate.style.display = 'flex';
+            dropzoneUpdate.style.display = 'block';
         });
 
         // ------------------ Actions ------------------
@@ -838,7 +805,7 @@
 
                 // If empty list, refresh to show empty state
                 const list = document.getElementById('resumes-list');
-                if (list.children.length === 0) {
+                if (list.rows.length === 0 || (list.rows.length === 1 && list.rows[0].id === 'empty-row')) {
                     window.location.reload();
                 }
 
@@ -860,7 +827,7 @@
             updateFile = null;
             updateFileInput.value = '';
             updateFileInfo.style.display = 'none';
-            dropzoneUpdate.style.display = 'flex';
+            dropzoneUpdate.style.display = 'block';
 
             updateModalOverlay.classList.add('open');
         }
@@ -959,7 +926,7 @@
             
             btnConfirmDeleteAcc.disabled = true;
             deleteAccSpinner.style.display = 'block';
-            deleteAccBtnText.innerText = 'Deleting Account...';
+            deleteAccBtnText.innerText = 'Deleting...';
 
             try {
                 const res = await fetch('/delete-account', { method: 'POST' });
@@ -977,7 +944,7 @@
                 
                 btnConfirmDeleteAcc.disabled = false;
                 deleteAccSpinner.style.display = 'none';
-                deleteAccBtnText.innerText = 'Permanently Delete My Account';
+                deleteAccBtnText.innerText = 'OK (Delete)';
             }
         });
     </script>
