@@ -29,7 +29,7 @@ func main() {
 	_ = godotenv.Load()
 
 	// Check if sync command is requested
-	if len(os.Args) > 1 && os.Args[1] == "--sync" {
+	if len(os.Args) > 1 && (os.Args[1] == "--sync" || os.Args[1] == "--sync-push" || os.Args[1] == "--sync-pull") {
 		sqlitePath := config.GetEnv("DB_PATH", "resumes.db")
 		postgresURL := os.Getenv("DATABASE_URL")
 		if postgresURL == "" {
@@ -47,7 +47,13 @@ func main() {
 			os.Exit(1)
 		}
 
-		err := db.SyncSQLiteToPostgres(sqlitePath, postgresURL)
+		var err error
+		if os.Args[1] == "--sync-pull" {
+			err = db.SyncPostgresToSQLite(sqlitePath, postgresURL)
+		} else {
+			err = db.SyncSQLiteToPostgres(sqlitePath, postgresURL)
+		}
+
 		if err != nil {
 			slog.Error("sync execution failed", "error", err)
 			os.Exit(1)
