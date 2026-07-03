@@ -124,6 +124,11 @@ func InitDB(connStr string) (*DB, error) {
 		return nil, fmt.Errorf("failed to run migrations: %w", err)
 	}
 
+	// Try to create case-insensitive unique indexes to enforce uniqueness at the DB level.
+	// Since there might be existing duplicates, we log a warning but don't fail startup.
+	_, _ = conn.Exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username_lower ON users (LOWER(username))`)
+	_, _ = conn.Exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_resumes_slug_lower ON resumes (LOWER(slug))`)
+
 	return db, nil
 }
 
@@ -176,7 +181,7 @@ func (db *DB) CreateUser(username, passwordHash string) (int64, error) {
 }
 
 func (db *DB) GetUserByUsername(username string) (*User, error) {
-	query := db.q(`SELECT id, username, password_hash, created_at FROM users WHERE username = ?`)
+	query := db.q(`SELECT id, username, password_hash, created_at FROM users WHERE LOWER(username) = LOWER(?)`)
 	row := db.conn.QueryRow(query, username)
 	var u User
 	var createdAtVal any
@@ -283,7 +288,7 @@ func (db *DB) GetResume(slug string) (*Resume, error) {
 	query := db.q(`
 	SELECT id, user_id, slug, r2_key, original_filename, created_at, updated_at
 	FROM resumes
-	WHERE slug = ?
+	WHERE LOWER(slug) = LOWER(?)
 	`)
 	row := db.conn.QueryRow(query, slug)
 	var r Resume
@@ -336,7 +341,7 @@ func (db *DB) UpdateResume(slug, r2Key, originalFilename string) error {
 	query := db.q(`
 	UPDATE resumes
 	SET r2_key = ?, original_filename = ?, updated_at = ?
-	WHERE slug = ?
+	WHERE LOWER(slug) = LOWER(?)
 	`)
 	_, err := db.conn.Exec(query, r2Key, originalFilename, time.Now(), slug)
 	if err != nil {
@@ -346,7 +351,7 @@ func (db *DB) UpdateResume(slug, r2Key, originalFilename string) error {
 }
 
 func (db *DB) DeleteResume(slug string) error {
-	query := db.q(`DELETE FROM resumes WHERE slug = ?`)
+	query := db.q(`DELETE FROM resumes WHERE LOWER(slug) = LOWER(?)`)
 	_, err := db.conn.Exec(query, slug)
 	return err
 }

@@ -56,7 +56,7 @@ func (h *Handler) HandleUpload(c *nanoserve.Context) error {
 		return nil
 	}
 
-	slug := strings.TrimSpace(c.Request.FormValue("slug"))
+	slug := strings.ToLower(strings.TrimSpace(c.Request.FormValue("slug")))
 	if slug == "" {
 		// auto-generate a unique random slug
 		for range 5 {
@@ -79,6 +79,10 @@ func (h *Handler) HandleUpload(c *nanoserve.Context) error {
 	} else {
 		if len(slug) < 3 || len(slug) > 30 {
 			h.writeJSONError(c.Writer, http.StatusBadRequest, "Slug must be between 3 and 30 characters.")
+			return nil
+		}
+		if !isValidSlug(slug) {
+			h.writeJSONError(c.Writer, http.StatusBadRequest, "Slug can only contain alphanumeric characters, hyphens, and underscores.")
 			return nil
 		}
 		existing, err := h.DB.GetResume(slug)
@@ -165,7 +169,7 @@ func (h *Handler) HandleUpload(c *nanoserve.Context) error {
 func (h *Handler) HandleUpdateResume(c *nanoserve.Context) error {
 	user := h.mustGetUser(c)
 
-	slug := c.Param("slug")
+	slug := strings.ToLower(c.Param("slug"))
 	if slug == "" {
 		h.writeJSONError(c.Writer, http.StatusBadRequest, "Slug is required.")
 		return nil
@@ -245,7 +249,7 @@ func (h *Handler) HandleUpdateResume(c *nanoserve.Context) error {
 func (h *Handler) HandleDeleteResume(c *nanoserve.Context) error {
 	user := h.mustGetUser(c)
 
-	slug := c.Param("slug")
+	slug := strings.ToLower(c.Param("slug"))
 	if slug == "" {
 		h.writeJSONError(c.Writer, http.StatusBadRequest, "Slug is required.")
 		return nil
@@ -286,7 +290,7 @@ func (h *Handler) HandleDeleteResume(c *nanoserve.Context) error {
 }
 
 func (h *Handler) HandleViewResume(c *nanoserve.Context) error {
-	slug := c.Param("slug")
+	slug := strings.ToLower(c.Param("slug"))
 	if slug == "" || !isValidSlug(slug) {
 		http.NotFound(c.Writer, c.Request)
 		return nil
@@ -312,7 +316,7 @@ func (h *Handler) HandleViewResume(c *nanoserve.Context) error {
 }
 
 func (h *Handler) HandleStreamResume(c *nanoserve.Context) error {
-	slug := c.Param("slug")
+	slug := strings.ToLower(c.Param("slug"))
 	if slug == "" || !isValidSlug(slug) {
 		http.NotFound(c.Writer, c.Request)
 		return nil

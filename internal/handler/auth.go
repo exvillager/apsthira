@@ -35,7 +35,7 @@ func (h *Handler) HandleLoginPost(c *nanoserve.Context) error {
 		c.Redirect("/dashboard", http.StatusSeeOther)
 		return nil
 	}
-	username := strings.TrimSpace(c.Request.FormValue("username"))
+	username := strings.ToLower(strings.TrimSpace(c.Request.FormValue("username")))
 	password := c.Request.FormValue("password")
 	data := map[string]any{}
 
@@ -97,7 +97,7 @@ func (h *Handler) HandleRegisterPost(c *nanoserve.Context) error {
 		c.Redirect("/dashboard", http.StatusSeeOther)
 		return nil
 	}
-	username := strings.TrimSpace(c.Request.FormValue("username"))
+	username := strings.ToLower(strings.TrimSpace(c.Request.FormValue("username")))
 	password := c.Request.FormValue("password")
 	data := map[string]any{}
 

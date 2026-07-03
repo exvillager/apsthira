@@ -28,6 +28,33 @@ func main() {
 	logger.Init()
 	_ = godotenv.Load()
 
+	// Check if sync command is requested
+	if len(os.Args) > 1 && os.Args[1] == "--sync" {
+		sqlitePath := config.GetEnv("DB_PATH", "resumes.db")
+		postgresURL := os.Getenv("DATABASE_URL")
+		if postgresURL == "" {
+			postgresURL = os.Getenv("SUPABASE_DB_URL")
+		}
+
+		if postgresURL == "" {
+			slog.Error("sync failed: target database URL not provided. Please set DATABASE_URL or SUPABASE_DB_URL in your env variables.")
+			os.Exit(1)
+		}
+
+		isSQLitePostgres := strings.HasPrefix(sqlitePath, "postgres://") || strings.HasPrefix(sqlitePath, "postgresql://")
+		if isSQLitePostgres {
+			slog.Error("sync failed: DB_PATH must point to a local SQLite database file, not a postgres connection string.")
+			os.Exit(1)
+		}
+
+		err := db.SyncSQLiteToPostgres(sqlitePath, postgresURL)
+		if err != nil {
+			slog.Error("sync execution failed", "error", err)
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
+
 	port := config.GetEnv("PORT", "8080")
 	dbConnStr := os.Getenv("DATABASE_URL")
 	if dbConnStr == "" {
