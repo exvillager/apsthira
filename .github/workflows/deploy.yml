@@ -19,9 +19,6 @@ jobs:
             set -e
             export PATH="$PATH:/usr/local/go/bin:$HOME/go/bin"
             cd /srv/apps/apsthira
-            # reset --hard only touches tracked files: .env, resumes.db and
-            # pm2.sh are untracked and stay untouched
-            git fetch origin main
-            git reset --hard origin/main
+            git pull origin main
             ./build.sh
             ./pm2.sh
