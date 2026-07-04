@@ -1,0 +1,35 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Copies only what the Docker build needs. rm stays off so
+      # ~/apsthira/.env and ~/apsthira/data (SQLite) on the VPS are untouched.
+      - name: Copy project files to VPS
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          source: "cmd,internal,go.mod,go.sum,Dockerfile,compose.yml,.dockerignore"
+          target: "~/apsthira"
+
+      - name: Build and restart container
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            cd ~/apsthira
+            docker compose up -d --build
+            docker image prune -f

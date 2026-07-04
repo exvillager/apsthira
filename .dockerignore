@@ -1,0 +1,23 @@
+# Secrets — injected at runtime via compose env_file, never baked into the image
+.env
+
+# Local SQLite databases
+*.db
+*.db-journal
+*.db-wal
+data/
+
+# Locally compiled binary
+apsthira
+
+# VCS / editor / misc
+.git
+.gitignore
+.claude
+.idea
+.vscode
+.DS_Store
+README.md
+compose.yml
+Dockerfile
+.dockerignore
