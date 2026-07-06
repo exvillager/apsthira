@@ -29,6 +29,7 @@ func ensureSQLiteSchema(db *sql.DB) error {
 		slug TEXT UNIQUE NOT NULL,
 		r2_key TEXT NOT NULL,
 		original_filename TEXT NOT NULL,
+		views_count INTEGER DEFAULT 0 NOT NULL,
 		created_at DATETIME NOT NULL,
 		updated_at DATETIME NOT NULL,
 		FOREIGN KEY(user_id) REFERENCES users(id)
@@ -44,8 +45,11 @@ func ensureSQLiteSchema(db *sql.DB) error {
 	CREATE INDEX IF NOT EXISTS idx_resumes_slug ON resumes(slug);
 	CREATE INDEX IF NOT EXISTS idx_resumes_user_id ON resumes(user_id);
 	`
-	_, err := db.Exec(query)
-	return err
+	if _, err := db.Exec(query); err != nil {
+		return err
+	}
+	_, _ = db.Exec("ALTER TABLE resumes ADD COLUMN views_count INTEGER DEFAULT 0 NOT NULL")
+	return nil
 }
 
 func parseTimeFallback(tStr string) time.Time {
@@ -88,6 +92,7 @@ func RunAutoSync(sqlitePath, postgresURL string) error {
 	}
 
 	// 2. Connect to Postgres
+	postgresURL = CleanPostgresURL(postgresURL)
 	postgresDB, err := sql.Open("postgres", postgresURL)
 	if err != nil {
 		return fmt.Errorf("failed to open remote postgres: %w", err)
@@ -108,6 +113,7 @@ func RunAutoSync(sqlitePath, postgresURL string) error {
 		slug VARCHAR(255) UNIQUE NOT NULL,
 		r2_key VARCHAR(255) NOT NULL,
 		original_filename VARCHAR(255) NOT NULL,
+		views_count INTEGER DEFAULT 0 NOT NULL,
 		created_at TIMESTAMP NOT NULL,
 		updated_at TIMESTAMP NOT NULL
 	);
@@ -115,6 +121,7 @@ func RunAutoSync(sqlitePath, postgresURL string) error {
 	if _, err = postgresDB.Exec(schemaQuery); err != nil {
 		return fmt.Errorf("failed to verify target schema: %w", err)
 	}
+	_, _ = postgresDB.Exec("ALTER TABLE resumes ADD COLUMN IF NOT EXISTS views_count INTEGER DEFAULT 0 NOT NULL")
 
 	// Count users
 	var sqliteUserCount int
@@ -194,6 +201,7 @@ func SyncSQLiteToPostgres(sqlitePath, postgresURL string) error {
 	}
 
 	// 2. Connect to Postgres
+	postgresURL = CleanPostgresURL(postgresURL)
 	postgresDB, err := sql.Open("postgres", postgresURL)
 	if err != nil {
 		return fmt.Errorf("failed to open target postgres db: %w", err)
@@ -259,6 +267,7 @@ func SyncSQLiteToPostgres(sqlitePath, postgresURL string) error {
 		slug VARCHAR(255) UNIQUE NOT NULL,
 		r2_key VARCHAR(255) NOT NULL,
 		original_filename VARCHAR(255) NOT NULL,
+		views_count INTEGER DEFAULT 0 NOT NULL,
 		created_at TIMESTAMP NOT NULL,
 		updated_at TIMESTAMP NOT NULL
 	);
@@ -277,6 +286,7 @@ func SyncSQLiteToPostgres(sqlitePath, postgresURL string) error {
 	if _, err = tx.Exec(fullSchemaQuery); err != nil {
 		return fmt.Errorf("failed to prepare target schemas: %w", err)
 	}
+	_, _ = tx.Exec(`ALTER TABLE resumes ADD COLUMN IF NOT EXISTS views_count INTEGER DEFAULT 0 NOT NULL`)
 
 	// 4. Sync Users
 	slog.Info("sync-push: syncing 'users' table...")
@@ -328,7 +338,7 @@ func SyncSQLiteToPostgres(sqlitePath, postgresURL string) error {
 
 	// 5. Sync Resumes
 	slog.Info("sync-push: syncing 'resumes' table...")
-	resumeRows, err := sqliteDB.Query("SELECT id, user_id, slug, r2_key, original_filename, created_at, updated_at FROM resumes")
+	resumeRows, err := sqliteDB.Query("SELECT id, user_id, slug, r2_key, original_filename, views_count, created_at, updated_at FROM resumes")
 	if err != nil {
 		return fmt.Errorf("failed to query source resumes: %w", err)
 	}
@@ -339,23 +349,25 @@ func SyncSQLiteToPostgres(sqlitePath, postgresURL string) error {
 	for resumeRows.Next() {
 		var id, userID int64
 		var slug, r2Key, originalFilename string
+		var viewsCount int64
 		var createdAt, updatedAt time.Time
-		if err = resumeRows.Scan(&id, &userID, &slug, &r2Key, &originalFilename, &createdAt, &updatedAt); err != nil {
+		if err = resumeRows.Scan(&id, &userID, &slug, &r2Key, &originalFilename, &viewsCount, &createdAt, &updatedAt); err != nil {
 			return fmt.Errorf("failed to scan source resume: %w", err)
 		}
 		sqliteResumeIDs = append(sqliteResumeIDs, strconv.FormatInt(id, 10))
 
 		_, err = tx.Exec(`
-			INSERT INTO resumes (id, user_id, slug, r2_key, original_filename, created_at, updated_at)
-			VALUES ($1, $2, $3, $4, $5, $6, $7)
+			INSERT INTO resumes (id, user_id, slug, r2_key, original_filename, views_count, created_at, updated_at)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 			ON CONFLICT (id) DO UPDATE SET
 				user_id = EXCLUDED.user_id,
 				slug = EXCLUDED.slug,
 				r2_key = EXCLUDED.r2_key,
 				original_filename = EXCLUDED.original_filename,
+				views_count = EXCLUDED.views_count,
 				created_at = EXCLUDED.created_at,
 				updated_at = EXCLUDED.updated_at
-		`, id, userID, slug, r2Key, originalFilename, createdAt, updatedAt)
+		`, id, userID, slug, r2Key, originalFilename, viewsCount, createdAt, updatedAt)
 		if err != nil {
 			return fmt.Errorf("failed to upsert resume %d: %w", id, err)
 		}
@@ -465,6 +477,7 @@ func SyncPostgresToSQLite(sqlitePath, postgresURL string) error {
 	}
 
 	// 2. Connect to Postgres
+	postgresURL = CleanPostgresURL(postgresURL)
 	postgresDB, err := sql.Open("postgres", postgresURL)
 	if err != nil {
 		return fmt.Errorf("failed to open source postgres db: %w", err)
@@ -528,7 +541,7 @@ func SyncPostgresToSQLite(sqlitePath, postgresURL string) error {
 
 	// 4. Sync Resumes
 	slog.Info("sync-pull: fetching resumes from Supabase...")
-	resumeRows, err := postgresDB.Query("SELECT id, user_id, slug, r2_key, original_filename, created_at, updated_at FROM resumes")
+	resumeRows, err := postgresDB.Query("SELECT id, user_id, slug, r2_key, original_filename, views_count, created_at, updated_at FROM resumes")
 	if err != nil {
 		return fmt.Errorf("failed to query source resumes from Postgres: %w", err)
 	}
@@ -539,23 +552,25 @@ func SyncPostgresToSQLite(sqlitePath, postgresURL string) error {
 	for resumeRows.Next() {
 		var id, userID int64
 		var slug, r2Key, originalFilename string
+		var viewsCount int64
 		var createdAt, updatedAt time.Time
-		if err = resumeRows.Scan(&id, &userID, &slug, &r2Key, &originalFilename, &createdAt, &updatedAt); err != nil {
+		if err = resumeRows.Scan(&id, &userID, &slug, &r2Key, &originalFilename, &viewsCount, &createdAt, &updatedAt); err != nil {
 			return fmt.Errorf("failed to scan source resume: %w", err)
 		}
 		pgResumeIDs = append(pgResumeIDs, strconv.FormatInt(id, 10))
 
 		_, err = tx.Exec(`
-			INSERT INTO resumes (id, user_id, slug, r2_key, original_filename, created_at, updated_at)
-			VALUES (?, ?, ?, ?, ?, ?, ?)
+			INSERT INTO resumes (id, user_id, slug, r2_key, original_filename, views_count, created_at, updated_at)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 			ON CONFLICT(id) DO UPDATE SET
 				user_id = excluded.user_id,
 				slug = excluded.slug,
 				r2_key = excluded.r2_key,
 				original_filename = excluded.original_filename,
+				views_count = excluded.views_count,
 				created_at = excluded.created_at,
 				updated_at = excluded.updated_at
-		`, id, userID, slug, r2Key, originalFilename, createdAt, updatedAt)
+		`, id, userID, slug, r2Key, originalFilename, viewsCount, createdAt, updatedAt)
 		if err != nil {
 			return fmt.Errorf("failed to upsert SQLite resume %d: %w", id, err)
 		}

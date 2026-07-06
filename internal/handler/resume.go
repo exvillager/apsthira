@@ -309,7 +309,7 @@ func (h *Handler) HandleViewResume(c *nanoserve.Context) error {
 
 	c.SetHeader("X-Content-Type-Options", "nosniff")
 	c.SetHeader("X-Frame-Options", "DENY")
-	c.SetHeader("Content-Security-Policy", "default-src 'self'; frame-src 'self'; frame-ancestors 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;")
+	c.SetHeader("Content-Security-Policy", "default-src 'self'; frame-src 'self'; frame-ancestors 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline';")
 	c.SetHeader("Referrer-Policy", "strict-origin-when-cross-origin")
 	c.SetHeader("Content-Type", "text/html; charset=utf-8")
 	return h.Tmpl.ExecuteTemplate(c.Writer, "view.html", resume)
@@ -359,4 +359,33 @@ func (h *Handler) HandleStreamResume(c *nanoserve.Context) error {
 		slog.Error("error streaming R2 object", "key", resume.R2Key, "error", err)
 	}
 	return nil
+}
+
+func (h *Handler) HandleIncrementViewCount(c *nanoserve.Context) error {
+	slug := strings.ToLower(c.Param("slug"))
+	if slug == "" || !isValidSlug(slug) {
+		h.writeJSONError(c.Writer, http.StatusBadRequest, "Invalid slug.")
+		return nil
+	}
+
+	resume, err := h.DB.GetResume(slug)
+	if err != nil {
+		slog.Error("DB error fetching resume for view increment", "slug", slug, "error", err)
+		h.writeJSONError(c.Writer, http.StatusInternalServerError, "Database error.")
+		return nil
+	}
+	if resume == nil {
+		h.writeJSONError(c.Writer, http.StatusNotFound, "Resume not found.")
+		return nil
+	}
+
+	if err = h.DB.IncrementViews(slug); err != nil {
+		slog.Error("failed to increment view count", "slug", slug, "error", err)
+		h.writeJSONError(c.Writer, http.StatusInternalServerError, "Failed to increment view count.")
+		return nil
+	}
+
+	c.SetHeader("Content-Type", "application/json")
+	c.Status(http.StatusOK)
+	return json.NewEncoder(c.Writer).Encode(map[string]string{"message": "View count updated."})
 }

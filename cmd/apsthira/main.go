@@ -168,6 +168,7 @@ func main() {
 
 	r.GET("/r/:slug", h.HandleViewResume)
 	r.GET("/r/:slug/raw", h.HandleStreamResume)
+	r.POST("/r/:slug/view", h.HandleIncrementViewCount)
 
 	slog.Info("server listening", "url", "http://localhost:"+port)
 	if err := r.Run(":" + port); err != nil {

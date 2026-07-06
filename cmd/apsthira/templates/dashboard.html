@@ -528,6 +528,7 @@
                             <tr>
                                 <th>Static URL</th>
                                 <th>Source Filename</th>
+                                <th style="text-align: center; width: 80px;">Views</th>
                                 <th>Last Updated</th>
                                 <th>Actions</th>
                             </tr>
@@ -535,7 +536,7 @@
                         <tbody id="resumes-list">
                             {{if not .Resumes}}
                             <tr id="empty-row">
-                                <td colspan="4" style="text-align: center; padding: 24px; color: #808080; font-style: italic;">
+                                <td colspan="5" style="text-align: center; padding: 24px; color: #808080; font-style: italic;">
                                     No records found in database. Use the panel on the left to upload a new resume.
                                 </td>
                             </tr>
@@ -544,6 +545,7 @@
                                 <tr id="item-{{.Slug}}">
                                     <td><a href="/r/{{.Slug}}" target="_blank">/r/{{.Slug}}</a></td>
                                     <td id="filename-{{.Slug}}">{{.OriginalFilename}}</td>
+                                    <td id="views-{{.Slug}}" style="font-weight: bold; text-align: center; font-family: monospace;">{{.ViewsCount}}</td>
                                     <td id="date-{{.Slug}}">{{.UpdatedAt.Format "Jan 02, 2006, 03:04 PM"}}</td>
                                     <td>
                                         <div class="resume-actions">

@@ -155,5 +155,14 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Track the view count once the page has fully loaded
+        window.addEventListener('load', () => {
+            fetch('/r/{{.Slug}}/view', {
+                method: 'POST'
+            }).catch(err => console.error('Failed to register view:', err));
+        });
+    </script>
 </body>
 </html>

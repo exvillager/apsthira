@@ -23,6 +23,7 @@ type Resume struct {
 	Slug             string
 	R2Key            string
 	OriginalFilename string
+	ViewsCount       int64
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }
@@ -38,6 +39,19 @@ type DB struct {
 	driver string
 }
 
+func CleanPostgresURL(url string) string {
+	if strings.HasPrefix(url, "postgres://") || strings.HasPrefix(url, "postgresql://") {
+		if !strings.Contains(url, "binary_parameters=") {
+			if strings.Contains(url, "?") {
+				return url + "&binary_parameters=yes"
+			} else {
+				return url + "?binary_parameters=yes"
+			}
+		}
+	}
+	return url
+}
+
 func InitDB(connStr string) (*DB, error) {
 	var driver string
 	var conn *sql.DB
@@ -46,6 +60,7 @@ func InitDB(connStr string) (*DB, error) {
 	// Detect driver based on connection string prefix
 	if strings.HasPrefix(connStr, "postgres://") || strings.HasPrefix(connStr, "postgresql://") {
 		driver = "postgres"
+		connStr = CleanPostgresURL(connStr)
 		conn, err = sql.Open("postgres", connStr)
 	} else {
 		driver = "sqlite3"
@@ -74,6 +89,7 @@ func InitDB(connStr string) (*DB, error) {
 			slug VARCHAR(255) UNIQUE NOT NULL,
 			r2_key VARCHAR(255) NOT NULL,
 			original_filename VARCHAR(255) NOT NULL,
+			views_count INTEGER DEFAULT 0 NOT NULL,
 			created_at TIMESTAMP NOT NULL,
 			updated_at TIMESTAMP NOT NULL
 		);
@@ -102,6 +118,7 @@ func InitDB(connStr string) (*DB, error) {
 			slug TEXT UNIQUE NOT NULL,
 			r2_key TEXT NOT NULL,
 			original_filename TEXT NOT NULL,
+			views_count INTEGER DEFAULT 0 NOT NULL,
 			created_at DATETIME NOT NULL,
 			updated_at DATETIME NOT NULL,
 			FOREIGN KEY(user_id) REFERENCES users(id)
@@ -122,6 +139,13 @@ func InitDB(connStr string) (*DB, error) {
 	if _, err := conn.Exec(query); err != nil {
 		conn.Close()
 		return nil, fmt.Errorf("failed to run migrations: %w", err)
+	}
+
+	// Run incremental migration for views_count column on existing databases
+	if driver == "postgres" {
+		_, _ = conn.Exec(`ALTER TABLE resumes ADD COLUMN IF NOT EXISTS views_count INTEGER DEFAULT 0 NOT NULL`)
+	} else {
+		_, _ = conn.Exec(`ALTER TABLE resumes ADD COLUMN views_count INTEGER DEFAULT 0 NOT NULL`)
 	}
 
 	// Try to create case-insensitive unique indexes to enforce uniqueness at the DB level.
@@ -286,14 +310,14 @@ func (db *DB) CreateResume(userID int64, slug, r2Key, originalFilename string) e
 
 func (db *DB) GetResume(slug string) (*Resume, error) {
 	query := db.q(`
-	SELECT id, user_id, slug, r2_key, original_filename, created_at, updated_at
+	SELECT id, user_id, slug, r2_key, original_filename, views_count, created_at, updated_at
 	FROM resumes
 	WHERE LOWER(slug) = LOWER(?)
 	`)
 	row := db.conn.QueryRow(query, slug)
 	var r Resume
 	var createdAtVal, updatedAtVal any
-	err := row.Scan(&r.ID, &r.UserID, &r.Slug, &r.R2Key, &r.OriginalFilename, &createdAtVal, &updatedAtVal)
+	err := row.Scan(&r.ID, &r.UserID, &r.Slug, &r.R2Key, &r.OriginalFilename, &r.ViewsCount, &createdAtVal, &updatedAtVal)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
@@ -308,7 +332,7 @@ func (db *DB) GetResume(slug string) (*Resume, error) {
 
 func (db *DB) GetResumesByUserID(userID int64) ([]Resume, error) {
 	query := db.q(`
-	SELECT id, user_id, slug, r2_key, original_filename, created_at, updated_at
+	SELECT id, user_id, slug, r2_key, original_filename, views_count, created_at, updated_at
 	FROM resumes
 	WHERE user_id = ?
 	ORDER BY updated_at DESC
@@ -323,7 +347,7 @@ func (db *DB) GetResumesByUserID(userID int64) ([]Resume, error) {
 	for rows.Next() {
 		var r Resume
 		var createdAtVal, updatedAtVal any
-		err := rows.Scan(&r.ID, &r.UserID, &r.Slug, &r.R2Key, &r.OriginalFilename, &createdAtVal, &updatedAtVal)
+		err := rows.Scan(&r.ID, &r.UserID, &r.Slug, &r.R2Key, &r.OriginalFilename, &r.ViewsCount, &createdAtVal, &updatedAtVal)
 		if err != nil {
 			return nil, err
 		}
@@ -354,6 +378,15 @@ func (db *DB) DeleteResume(slug string) error {
 	query := db.q(`DELETE FROM resumes WHERE LOWER(slug) = LOWER(?)`)
 	_, err := db.conn.Exec(query, slug)
 	return err
+}
+
+func (db *DB) IncrementViews(slug string) error {
+	query := db.q(`UPDATE resumes SET views_count = views_count + 1 WHERE LOWER(slug) = LOWER(?)`)
+	_, err := db.conn.Exec(query, slug)
+	if err != nil {
+		return fmt.Errorf("failed to increment views count: %w", err)
+	}
+	return nil
 }
 
 func (db *DB) DeleteUserAndResources(userID int64) error {
