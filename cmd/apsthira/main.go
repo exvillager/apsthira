@@ -170,8 +170,8 @@ func main() {
 	r.GET("/r/:slug/raw", h.HandleStreamResume)
 	r.POST("/r/:slug/view", h.HandleIncrementViewCount)
 
-	slog.Info("server listening", "url", "http://localhost:"+port)
-	if err := r.Run(":" + port); err != nil {
+	slog.Info("server listening", "url", "http://127.0.0.1:"+port)
+	if err := r.Run("127.0.0.1:" + port); err != nil {
 		slog.Error("server listen failed", "error", err)
 		os.Exit(1)
 	}
