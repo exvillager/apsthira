@@ -183,8 +183,9 @@ func main() {
 
 	r.GET("/metrics", metrics.Handler())
 
-	slog.Info("server listening", "url", "http://127.0.0.1:"+port)
-	if err := r.Run("127.0.0.1:" + port); err != nil {
+	host := config.GetEnv("HOST", "0.0.0.0")
+	slog.Info("server listening", "url", "http://"+host+":"+port)
+	if err := r.Run(host + ":" + port); err != nil {
 		slog.Error("server listen failed", "error", err)
 		os.Exit(1)
 	}
