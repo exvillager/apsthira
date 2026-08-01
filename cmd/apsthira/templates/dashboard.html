@@ -29,14 +29,14 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 24px;
+            padding: 24px 36px;
         }
 
         /* Top Header */
         header {
-            max-width: 1100px;
+            max-width: 1520px;
             width: 100%;
-            margin: 0 auto 24px auto;
+            margin: 0 auto 20px auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -47,11 +47,11 @@
         .logo {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 20px;
+            font-size: 22px;
             letter-spacing: -0.5px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             text-decoration: none;
             color: var(--text);
         }
@@ -61,7 +61,7 @@
             font-size: 11px;
             background: #f5f2eb;
             border: 1px solid var(--border);
-            padding: 2px 6px;
+            padding: 3px 8px;
             font-weight: 600;
         }
 
@@ -120,18 +120,57 @@
             box-shadow: 5px 5px 0px #dc2626;
         }
 
+        /* Top Metric Strip */
+        .metrics-strip {
+            max-width: 1520px;
+            width: 100%;
+            margin: 0 auto 24px auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 900px) {
+            .metrics-strip { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            box-shadow: 3px 3px 0px #1c1917;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .metric-val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
         /* Layout Grid */
         .workspace {
-            max-width: 1100px;
+            max-width: 1520px;
             width: 100%;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 360px 1fr;
+            grid-template-columns: 380px 1fr;
             gap: 24px;
             flex-grow: 1;
         }
 
-        @media (max-width: 860px) {
+        @media (max-width: 1024px) {
             .workspace { grid-template-columns: 1fr; }
         }
 
@@ -139,24 +178,24 @@
             background: var(--card-bg);
             border: 2px solid var(--border);
             box-shadow: var(--shadow);
-            padding: 24px;
+            padding: 28px;
             display: flex;
             flex-direction: column;
         }
 
         .panel-header {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 700;
-            margin-bottom: 16px;
-            padding-bottom: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
             border-bottom: 2px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .form-group { margin-bottom: 16px; }
+        .form-group { margin-bottom: 18px; }
 
         .form-group label {
             display: block;
@@ -186,9 +225,9 @@
             width: 100%;
             background: transparent;
             border: none;
-            padding: 8px 10px;
+            padding: 10px 12px;
             font-family: 'Inter', sans-serif;
-            font-size: 13px;
+            font-size: 14px;
             color: var(--text);
             outline: none;
         }
@@ -198,15 +237,13 @@
             background: #ffffff;
         }
 
-        .form-control:focus {
-            background: #fffdfa;
-        }
+        .form-control:focus { background: #fffdfa; }
 
         /* Dropzone */
         .dropzone {
             border: 2px dashed var(--border);
             background: #faf8f5;
-            padding: 28px 16px;
+            padding: 32px 16px;
             text-align: center;
             cursor: pointer;
             transition: background 0.15s ease;
@@ -217,7 +254,7 @@
         .dropzone .main-text {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px;
             display: block;
             margin-bottom: 4px;
         }
@@ -234,7 +271,7 @@
             justify-content: space-between;
             background: #fef3c7;
             border: 2px solid var(--border);
-            padding: 8px 12px;
+            padding: 10px 14px;
             margin-top: 8px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
@@ -260,7 +297,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 13.5px;
             text-align: left;
         }
 
@@ -270,12 +307,12 @@
             text-transform: uppercase;
             background: #f5f2eb;
             border-bottom: 2px solid var(--border);
-            padding: 10px 12px;
+            padding: 12px 16px;
             font-weight: 700;
         }
 
         td {
-            padding: 12px;
+            padding: 14px 16px;
             border-bottom: 1px solid #e7e5e4;
             vertical-align: middle;
         }
@@ -291,12 +328,12 @@
 
         .actions-cell {
             display: flex;
-            gap: 4px;
+            gap: 6px;
             flex-wrap: wrap;
         }
 
         .btn-sm {
-            padding: 3px 8px;
+            padding: 4px 10px;
             font-size: 11px;
             box-shadow: 2px 2px 0px #1c1917;
         }
@@ -309,7 +346,7 @@
             background: #fef2f2;
             border: 2px solid #dc2626;
             color: #991b1b;
-            padding: 8px 12px;
+            padding: 10px 14px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
             margin-bottom: 16px;
@@ -324,7 +361,7 @@
             color: #ffffff;
             font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
-            padding: 10px 18px;
+            padding: 12px 20px;
             box-shadow: 4px 4px 0px #d97706;
             display: none;
             z-index: 1000;
@@ -349,19 +386,19 @@
             border: 2px solid var(--border);
             box-shadow: 8px 8px 0px #1c1917;
             width: 90%;
-            max-width: 480px;
+            max-width: 520px;
         }
 
         .modal-header {
             background: #f5f2eb;
             border-bottom: 2px solid var(--border);
-            padding: 12px 16px;
+            padding: 14px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 16px;
         }
 
         .modal-close {
@@ -369,16 +406,16 @@
             border: none;
             font-family: 'JetBrains Mono', monospace;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
         }
 
-        .modal-body { padding: 20px; }
+        .modal-body { padding: 24px; }
 
         footer {
-            max-width: 1100px;
+            max-width: 1520px;
             width: 100%;
-            margin: 32px auto 0 auto;
+            margin: 36px auto 0 auto;
             padding-top: 16px;
             border-top: 2px solid var(--border);
             display: flex;
@@ -404,6 +441,38 @@
             </form>
         </div>
     </header>
+
+    <!-- Metrics Summary Strip -->
+    <div class="metrics-strip">
+        <div class="metric-card">
+            <div>
+                <div class="metric-label">Active Links</div>
+                <div class="metric-val">{{len .Resumes}} / 5</div>
+            </div>
+            <span style="font-size: 24px;">🔗</span>
+        </div>
+        <div class="metric-card">
+            <div>
+                <div class="metric-label">Cloud Storage</div>
+                <div class="metric-val" style="font-size: 16px; font-family: 'JetBrains Mono', monospace;">Cloudflare R2</div>
+            </div>
+            <span style="font-size: 24px;">☁️</span>
+        </div>
+        <div class="metric-card">
+            <div>
+                <div class="metric-label">Version History</div>
+                <div class="metric-val" style="font-size: 16px; font-family: 'JetBrains Mono', monospace;">Max 3 Revs</div>
+            </div>
+            <span style="font-size: 24px;">📜</span>
+        </div>
+        <div class="metric-card">
+            <div>
+                <div class="metric-label">Security</div>
+                <div class="metric-val" style="font-size: 16px; font-family: 'JetBrains Mono', monospace;">PIN & Expiry</div>
+            </div>
+            <span style="font-size: 24px;">🔒</span>
+        </div>
+    </div>
 
     <div class="workspace">
         <!-- Left: Upload Panel -->
@@ -437,17 +506,17 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" id="btn-upload-submit" style="width: 100%; justify-content: center; padding: 10px;">
+                <button type="submit" class="btn btn-primary" id="btn-upload-submit" style="width: 100%; justify-content: center; padding: 12px;">
                     <span id="btn-upload-text">Generate Static Link →</span>
                 </button>
             </form>
         </div>
 
-        <!-- Right: Links Table -->
+        <!-- Right: Links Table (Wide View) -->
         <div class="panel">
             <div class="panel-header">
                 <span>ACTIVE RESUME LINKS</span>
-                <span class="badge" style="background: #fef3c7; color: #92400e;">MAX 5 LINKS</span>
+                <span class="badge" style="background: #fef3c7; color: #92400e;">LIVE SHORT URLS</span>
             </div>
 
             <div id="list-alert" class="alert"></div>
@@ -466,7 +535,7 @@
                     <tbody id="resumes-list">
                         {{if not .Resumes}}
                         <tr id="empty-row">
-                            <td colspan="5" style="text-align: center; padding: 32px; color: var(--muted); font-style: italic;">
+                            <td colspan="5" style="text-align: center; padding: 40px; color: var(--muted); font-style: italic;">
                                 No resume links generated yet. Use the panel on the left to upload your first resume.
                             </td>
                         </tr>
@@ -474,9 +543,9 @@
                             {{range .Resumes}}
                             <tr id="item-{{.Slug}}">
                                 <td><a href="/r/{{.Slug}}" target="_blank" class="link-url">/r/{{.Slug}}</a></td>
-                                <td id="filename-{{.Slug}}" style="font-weight: 500;">{{.OriginalFilename}}</td>
+                                <td id="filename-{{.Slug}}" style="font-weight: 600;">{{.OriginalFilename}}</td>
                                 <td id="views-{{.Slug}}" style="font-weight: bold; text-align: center; font-family: 'JetBrains Mono', monospace;">{{.ViewsCount}}</td>
-                                <td id="date-{{.Slug}}" style="font-family: 'JetBrains Mono', monospace; font-size: 11px;">{{.UpdatedAt.Format "Jan 02, 2006"}}</td>
+                                <td id="date-{{.Slug}}" style="font-family: 'JetBrains Mono', monospace; font-size: 12px;">{{.UpdatedAt.Format "Jan 02, 2006, 03:04 PM"}}</td>
                                 <td>
                                     <div class="actions-cell">
                                         <button class="btn btn-sm" onclick="copyLink('{{.Slug}}')">Copy</button>
@@ -504,7 +573,7 @@
 
     <!-- Analytics Modal -->
     <div class="modal-overlay" id="analytics-modal-overlay">
-        <div class="modal" style="max-width: 520px;">
+        <div class="modal" style="max-width: 560px;">
             <div class="modal-header">
                 <span>VISITOR ANALYTICS: <span id="analytics-slug-title">/r/slug</span></span>
                 <button type="button" class="modal-close" onclick="closeAnalyticsModal()">✕</button>
@@ -513,7 +582,7 @@
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
                     <div style="background: #faf8f5; border: 1.5px solid var(--border); padding: 12px; text-align: center;">
                         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted);">TOTAL VIEWS</div>
-                        <div id="stats-total-views" style="font-family: 'JetBrains Mono', monospace; font-weight: bold; font-size: 20px;">0</div>
+                        <div id="stats-total-views" style="font-family: 'JetBrains Mono', monospace; font-weight: bold; font-size: 22px;">0</div>
                     </div>
                     <div style="background: #faf8f5; border: 1.5px solid var(--border); padding: 12px; text-align: center;">
                         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted);">TOP SOURCE</div>
@@ -546,7 +615,7 @@
 
     <!-- Versions Modal -->
     <div class="modal-overlay" id="versions-modal-overlay">
-        <div class="modal" style="max-width: 500px;">
+        <div class="modal" style="max-width: 520px;">
             <div class="modal-header">
                 <span>REVISION HISTORY: <span id="versions-slug-title">/r/slug</span></span>
                 <button type="button" class="modal-close" onclick="closeVersionsModal()">✕</button>
@@ -575,7 +644,7 @@
 
     <!-- Settings Modal -->
     <div class="modal-overlay" id="settings-modal-overlay">
-        <div class="modal" style="max-width: 420px;">
+        <div class="modal" style="max-width: 440px;">
             <div class="modal-header">
                 <span>LINK SETTINGS: <span id="settings-slug-title">/r/slug</span></span>
                 <button type="button" class="modal-close" onclick="closeSettingsModal()">✕</button>
@@ -619,14 +688,14 @@
 
     <!-- QR Modal -->
     <div class="modal-overlay" id="qr-modal-overlay">
-        <div class="modal" style="max-width: 340px;">
+        <div class="modal" style="max-width: 360px;">
             <div class="modal-header">
                 <span>QR CODE: <span id="qr-slug-title">/r/slug</span></span>
                 <button type="button" class="modal-close" onclick="closeQRModal()">✕</button>
             </div>
             <div class="modal-body" style="text-align: center;">
                 <p style="margin-top: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; margin-bottom: 12px;">Scan with camera to view resume:</p>
-                <img id="qr-img" src="" alt="QR Code" style="width: 180px; height: 180px; border: 2px solid var(--border); background: #fff; padding: 8px;">
+                <img id="qr-img" src="" alt="QR Code" style="width: 200px; height: 200px; border: 2px solid var(--border); background: #fff; padding: 8px;">
                 <div style="margin-top: 16px; display: flex; gap: 8px; justify-content: center;">
                     <a id="qr-download-btn" href="#" download="resume-qr.png" class="btn btn-primary btn-sm">Download PNG</a>
                     <button type="button" class="btn btn-sm" onclick="closeQRModal()">Close</button>
@@ -637,7 +706,7 @@
 
     <!-- Replace File Modal -->
     <div class="modal-overlay" id="update-modal-overlay">
-        <div class="modal" style="max-width: 420px;">
+        <div class="modal" style="max-width: 440px;">
             <div class="modal-header">
                 <span>REPLACE FILE: <span id="modal-slug-title">/r/slug</span></span>
                 <button type="button" class="modal-close" id="btn-close-modal">✕</button>
@@ -674,7 +743,7 @@
 
     <!-- Delete Account Modal -->
     <div class="modal-overlay" id="delete-acc-modal-overlay">
-        <div class="modal" style="max-width: 400px;">
+        <div class="modal" style="max-width: 420px;">
             <div class="modal-header" style="background: #fef2f2; color: #991b1b;">
                 <span>⚠️ DELETE ACCOUNT</span>
                 <button type="button" class="modal-close" id="btn-close-delete-acc">✕</button>
