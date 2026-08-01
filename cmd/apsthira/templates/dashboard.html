@@ -549,9 +549,13 @@
                                     <td id="date-{{.Slug}}">{{.UpdatedAt.Format "Jan 02, 2006, 03:04 PM"}}</td>
                                     <td>
                                         <div class="resume-actions">
-                                            <button class="btn btn-action" onclick="copyLink('{{.Slug}}')">Copy</button>
-                                            <button class="btn btn-action" onclick="openUpdateModal('{{.Slug}}')">Replace</button>
-                                            <button class="btn btn-action btn-delete" onclick="deleteResume('{{.Slug}}')">Delete</button>
+                                            <button class="btn btn-action" onclick="copyLink('{{.Slug}}')" title="Copy Link">Copy</button>
+                                            <button class="btn btn-action" onclick="openAnalyticsModal('{{.Slug}}')" title="View Stats">Stats</button>
+                                            <button class="btn btn-action" onclick="openVersionsModal('{{.Slug}}')" title="Version History">Versions</button>
+                                            <button class="btn btn-action" onclick="openSettingsModal('{{.Slug}}', '{{if .PasscodeHash}}true{{end}}', '{{if .ExpiresAt}}{{.ExpiresAt.Format "2006-01-02T15:04"}}{{end}}', {{.AllowDownload}})" title="Security Settings">Settings</button>
+                                            <button class="btn btn-action" onclick="openQRModal('{{.Slug}}')" title="QR Code">QR</button>
+                                            <button class="btn btn-action" onclick="openUpdateModal('{{.Slug}}')" title="Replace PDF">Replace</button>
+                                            <button class="btn btn-action btn-delete" onclick="deleteResume('{{.Slug}}')" title="Delete Resume">Delete</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -566,7 +570,7 @@
         <!-- Status Bar -->
         <div class="status-bar">
             <div class="status-field">Uploader Profile: {{.Username}}</div>
-            <div class="status-field fixed">Storage Limit: 3 Links Max</div>
+            <div class="status-field fixed">Storage Limit: 5 Links Max</div>
             <div class="status-field fixed">System Status: Connected</div>
         </div>
     </div>
@@ -574,6 +578,139 @@
     <footer>
         &copy; 2026 Apsthira. Securely hosted via Go & R2. | <a href="https://github.com/libsib/apsthira" target="_blank">GitHub</a>
     </footer>
+
+    <!-- Analytics Modal -->
+    <div class="modal-overlay" id="analytics-modal-overlay">
+        <div class="modal" style="max-width: 520px;">
+            <div class="title-bar">
+                <div class="title-bar-text">Visitor Insights: <span id="analytics-slug-title">/r/slug</span></div>
+                <button type="button" class="title-bar-button" onclick="closeAnalyticsModal()">X</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">
+                    <div style="background: #fff; border: 1px solid #808080; padding: 8px; text-align: center;">
+                        <div style="font-size: 10px; color: #555;">TOTAL VIEWS</div>
+                        <div id="stats-total-views" style="font-weight: bold; font-size: 18px; font-family: monospace;">0</div>
+                    </div>
+                    <div style="background: #fff; border: 1px solid #808080; padding: 8px; text-align: center;">
+                        <div style="font-size: 10px; color: #555;">TOP SOURCE</div>
+                        <div id="stats-top-referrer" style="font-weight: bold; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</div>
+                    </div>
+                    <div style="background: #fff; border: 1px solid #808080; padding: 8px; text-align: center;">
+                        <div style="font-size: 10px; color: #555;">MAIN DEVICE</div>
+                        <div id="stats-top-device" style="font-weight: bold; font-size: 11px;">Desktop</div>
+                    </div>
+                </div>
+
+                <div style="background: #fff; border: 1px solid #808080; padding: 12px; margin-bottom: 12px;">
+                    <div style="font-weight: bold; margin-bottom: 8px; font-size: 11px;">Daily Views (Last 14 Days):</div>
+                    <div id="daily-chart-container" style="display: flex; align-items: flex-end; gap: 4px; height: 90px; border-bottom: 1px solid #808080; padding-bottom: 4px;"></div>
+                </div>
+
+                <div style="background: #fff; border: 1px solid #808080; padding: 10px;">
+                    <div style="font-weight: bold; margin-bottom: 6px; font-size: 11px;">Top Traffic Sources:</div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11px;" id="referrers-table">
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+                    <button type="button" class="btn" onclick="closeAnalyticsModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Version History Modal -->
+    <div class="modal-overlay" id="versions-modal-overlay">
+        <div class="modal" style="max-width: 480px;">
+            <div class="title-bar">
+                <div class="title-bar-text">Version History: <span id="versions-slug-title">/r/slug</span></div>
+                <button type="button" class="title-bar-button" onclick="closeVersionsModal()">X</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 11px; margin-top: 0;">Revisions saved during replacements. You can restore any past revision as active.</p>
+                <div style="max-height: 250px; overflow-y: auto; border: 1px solid #808080; background: #fff; margin-bottom: 12px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11px;" id="versions-table">
+                        <thead>
+                            <tr style="background: #c0c0c0; border-bottom: 1px solid #808080;">
+                                <th style="padding: 4px; text-align: left;">Ver</th>
+                                <th style="padding: 4px; text-align: left;">Filename</th>
+                                <th style="padding: 4px; text-align: left;">Uploaded</th>
+                                <th style="padding: 4px; text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button type="button" class="btn" onclick="closeVersionsModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security & Expiration Settings Modal -->
+    <div class="modal-overlay" id="settings-modal-overlay">
+        <div class="modal" style="max-width: 400px;">
+            <div class="title-bar">
+                <div class="title-bar-text">Link Settings: <span id="settings-slug-title">/r/slug</span></div>
+                <button type="button" class="title-bar-button" onclick="closeSettingsModal()">X</button>
+            </div>
+            <div class="modal-body">
+                <div id="settings-alert" class="alert"></div>
+
+                <form id="settings-form" onsubmit="saveSettings(event)">
+                    <input type="hidden" id="settings-slug">
+
+                    <div class="form-group">
+                        <label for="settings-passcode">PIN / Passcode Protection:</label>
+                        <input type="password" id="settings-passcode" class="form-control" placeholder="Leave blank to keep existing passcode">
+                        <label style="font-weight: normal; margin-top: 4px; font-size: 11px;">
+                            <input type="checkbox" id="settings-remove-passcode"> Remove passcode protection
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settings-expiry">Automatic Expiration Date:</label>
+                        <input type="datetime-local" id="settings-expiry" class="form-control">
+                        <label style="font-weight: normal; margin-top: 4px; font-size: 11px;">
+                            <input type="checkbox" id="settings-clear-expiry"> Clear expiration date
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="font-weight: normal; font-size: 12px;">
+                            <input type="checkbox" id="settings-allow-download" checked> Allow direct PDF downloads for visitors
+                        </label>
+                    </div>
+
+                    <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;">
+                        <button type="submit" class="btn" style="font-weight: bold;">Save Settings</button>
+                        <button type="button" class="btn" onclick="closeSettingsModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div class="modal-overlay" id="qr-modal-overlay">
+        <div class="modal" style="max-width: 320px;">
+            <div class="title-bar">
+                <div class="title-bar-text">QR Code: <span id="qr-slug-title">/r/slug</span></div>
+                <button type="button" class="title-bar-button" onclick="closeQRModal()">X</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <p style="margin-top: 0; font-size: 11px; font-weight: bold;">Scan with phone camera to view resume:</p>
+                <img id="qr-img" src="" alt="QR Code" style="width: 180px; height: 180px; border: 1px solid #808080; background: #fff; padding: 6px;">
+                <div style="margin-top: 12px; display: flex; gap: 6px; justify-content: center;">
+                    <a id="qr-download-btn" href="#" download="resume-qr.png" class="btn">Download QR PNG</a>
+                    <button type="button" class="btn" onclick="closeQRModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Delete Account Modal -->
     <div class="modal-overlay" id="delete-acc-modal-overlay">
@@ -949,6 +1086,205 @@
                 deleteAccBtnText.innerText = 'OK (Delete)';
             }
         });
+
+        // ------------------ Analytics Modal ------------------
+        async function openAnalyticsModal(slug) {
+            document.getElementById('analytics-slug-title').innerText = `/r/${slug}`;
+            const totalEl = document.getElementById('stats-total-views');
+            const refEl = document.getElementById('stats-top-referrer');
+            const devEl = document.getElementById('stats-top-device');
+            const chartContainer = document.getElementById('daily-chart-container');
+            const refTableBody = document.querySelector('#referrers-table tbody');
+
+            totalEl.innerText = '...';
+            chartContainer.innerHTML = '<div style="margin: auto;">Loading stats...</div>';
+            refTableBody.innerHTML = '';
+
+            document.getElementById('analytics-modal-overlay').classList.add('open');
+
+            try {
+                const res = await fetch(`/r/${slug}/analytics`);
+                if (!res.ok) throw new Error('Failed to load analytics');
+                const data = await res.json();
+
+                totalEl.innerText = data.total_views || 0;
+
+                // Top Referrer
+                if (data.top_referrers && data.top_referrers.length > 0) {
+                    refEl.innerText = data.top_referrers[0].referrer;
+                } else {
+                    refEl.innerText = 'Direct / Email';
+                }
+
+                // Main Device
+                let maxDev = 'Desktop', maxCnt = 0;
+                if (data.device_types) {
+                    for (const [dev, cnt] of Object.entries(data.device_types)) {
+                        if (cnt > maxCnt) { maxCnt = cnt; maxDev = dev; }
+                    }
+                }
+                devEl.innerText = maxDev.toUpperCase();
+
+                // Daily Chart
+                chartContainer.innerHTML = '';
+                const days = data.daily_views || [];
+                if (days.length === 0) {
+                    chartContainer.innerHTML = '<div style="margin: auto; color: #808080; font-style: italic;">No recent views recorded.</div>';
+                } else {
+                    const maxVal = Math.max(...days.map(d => d.count), 1);
+                    days.forEach(d => {
+                        const pct = Math.max(10, Math.round((d.count / maxVal) * 100));
+                        const col = document.createElement('div');
+                        col.style.flex = '1';
+                        col.style.height = `${pct}%`;
+                        col.style.background = '#000080';
+                        col.style.borderRadius = '2px 2px 0 0';
+                        col.title = `${d.date}: ${d.count} views`;
+                        chartContainer.appendChild(col);
+                    });
+                }
+
+                // Referrers Table
+                if (data.top_referrers && data.top_referrers.length > 0) {
+                    refTableBody.innerHTML = data.top_referrers.map(r => `
+                        <tr style="border-bottom: 1px dotted #ccc;">
+                            <td style="padding: 3px;">${r.referrer}</td>
+                            <td style="padding: 3px; font-weight: bold; text-align: right; font-family: monospace;">${r.count}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    refTableBody.innerHTML = '<tr><td colspan="2" style="padding: 4px; color: #808080; font-style: italic;">No traffic sources recorded yet.</td></tr>';
+                }
+            } catch (err) {
+                chartContainer.innerHTML = `<div style="color: red; padding: 8px;">${err.message}</div>`;
+            }
+        }
+        function closeAnalyticsModal() {
+            document.getElementById('analytics-modal-overlay').classList.remove('open');
+        }
+
+        // ------------------ Version History Modal ------------------
+        async function openVersionsModal(slug) {
+            document.getElementById('versions-slug-title').innerText = `/r/${slug}`;
+            const tbody = document.querySelector('#versions-table tbody');
+            tbody.innerHTML = '<tr><td colspan="4" style="padding: 8px; text-align: center;">Loading version history...</td></tr>';
+
+            document.getElementById('versions-modal-overlay').classList.add('open');
+
+            try {
+                const res = await fetch(`/r/${slug}/versions`);
+                if (!res.ok) throw new Error('Failed to load version history');
+                const versions = await res.json();
+
+                if (!versions || versions.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="padding: 8px; text-align: center; color: #808080;">No past revisions stored yet.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = versions.map((v, idx) => `
+                    <tr style="border-bottom: 1px dotted #ccc;">
+                        <td style="padding: 4px; font-weight: bold;">v${v.version_num}</td>
+                        <td style="padding: 4px;">${v.original_filename}</td>
+                        <td style="padding: 4px;">${new Date(v.created_at).toLocaleDateString()}</td>
+                        <td style="padding: 4px; text-align: center;">
+                            <a href="/r/${slug}/raw?v=${v.id}&dl=1" target="_blank" class="btn btn-action" style="padding: 1px 4px;">DL</a>
+                            ${idx === 0 ? '<span style="color: green; font-weight: bold; margin-left: 4px;">Active</span>' : `<button type="button" class="btn btn-action" style="padding: 1px 4px;" onclick="rollbackVersion('${slug}', ${v.id})">Restore</button>`}
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="4" style="padding: 8px; color: red;">${err.message}</td></tr>`;
+            }
+        }
+        function closeVersionsModal() {
+            document.getElementById('versions-modal-overlay').classList.remove('open');
+        }
+
+        async function rollbackVersion(slug, versionId) {
+            if (!confirm('Are you sure you want to restore this revision as active?')) return;
+            try {
+                const res = await fetch(`/r/${slug}/rollback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ version_id: versionId })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Rollback failed');
+
+                toast.innerText = 'Resume version restored successfully!';
+                toast.style.display = 'block';
+                setTimeout(() => toast.style.display = 'none', 2000);
+                closeVersionsModal();
+                window.location.reload();
+            } catch (err) {
+                alert(`Error restoring version: ${err.message}`);
+            }
+        }
+
+        // ------------------ Settings Modal ------------------
+        function openSettingsModal(slug, hasPasscode, expiresAtIso, allowDownload) {
+            document.getElementById('settings-slug-title').innerText = `/r/${slug}`;
+            document.getElementById('settings-slug').value = slug;
+            document.getElementById('settings-passcode').value = '';
+            document.getElementById('settings-remove-passcode').checked = false;
+            document.getElementById('settings-clear-expiry').checked = false;
+            document.getElementById('settings-expiry').value = expiresAtIso ? expiresAtIso.slice(0, 16) : '';
+            document.getElementById('settings-allow-download').checked = allowDownload;
+            document.getElementById('settings-alert').style.display = 'none';
+
+            document.getElementById('settings-modal-overlay').classList.add('open');
+        }
+        function closeSettingsModal() {
+            document.getElementById('settings-modal-overlay').classList.remove('open');
+        }
+
+        async function saveSettings(e) {
+            e.preventDefault();
+            const slug = document.getElementById('settings-slug').value;
+            const alertBox = document.getElementById('settings-alert');
+            alertBox.style.display = 'none';
+
+            const payload = {
+                passcode: document.getElementById('settings-passcode').value,
+                remove_passcode: document.getElementById('settings-remove-passcode').checked,
+                expires_at: document.getElementById('settings-expiry').value,
+                clear_expiry: document.getElementById('settings-clear-expiry').checked,
+                allow_download: document.getElementById('settings-allow-download').checked
+            };
+
+            try {
+                const res = await fetch(`/r/${slug}/settings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to save settings');
+
+                toast.innerText = 'Settings saved successfully!';
+                toast.style.display = 'block';
+                setTimeout(() => toast.style.display = 'none', 2000);
+                closeSettingsModal();
+            } catch (err) {
+                alertBox.innerText = err.message;
+                alertBox.style.display = 'block';
+            }
+        }
+
+        // ------------------ QR Modal ------------------
+        function openQRModal(slug) {
+            document.getElementById('qr-slug-title').innerText = `/r/${slug}`;
+            const img = document.getElementById('qr-img');
+            const dl = document.getElementById('qr-download-btn');
+            img.src = `/r/${slug}/qr`;
+            dl.href = `/r/${slug}/qr`;
+            dl.download = `${slug}-qr.png`;
+
+            document.getElementById('qr-modal-overlay').classList.add('open');
+        }
+        function closeQRModal() {
+            document.getElementById('qr-modal-overlay').classList.remove('open');
+        }
     </script>
 </body>
 </html>

@@ -170,6 +170,13 @@ func main() {
 	r.POST("/r/:slug/update", h.RequireAuth, h.HandleUpdateResume)
 	r.POST("/r/:slug/delete", h.RequireAuth, h.HandleDeleteResume)
 
+	r.GET("/r/:slug/analytics", h.RequireAuth, h.HandleGetAnalytics)
+	r.GET("/r/:slug/versions", h.RequireAuth, h.HandleGetVersions)
+	r.POST("/r/:slug/rollback", h.RequireAuth, h.HandleRollbackVersion)
+	r.POST("/r/:slug/settings", h.RequireAuth, h.HandleUpdateSettings)
+	r.POST("/r/:slug/unlock", h.HandleUnlockResume)
+	r.GET("/r/:slug/qr", h.HandleGetQRCode)
+
 	r.GET("/r/:slug", h.HandleViewResume)
 	r.GET("/r/:slug/raw", h.HandleStreamResume)
 	r.POST("/r/:slug/view", h.HandleIncrementViewCount)

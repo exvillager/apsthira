@@ -30,9 +30,33 @@ func ensureSQLiteSchema(db *sql.DB) error {
 		r2_key TEXT NOT NULL,
 		original_filename TEXT NOT NULL,
 		views_count INTEGER DEFAULT 0 NOT NULL,
+		passcode_hash TEXT DEFAULT '' NOT NULL,
+		expires_at DATETIME,
+		allow_download INTEGER DEFAULT 1 NOT NULL,
 		created_at DATETIME NOT NULL,
 		updated_at DATETIME NOT NULL,
 		FOREIGN KEY(user_id) REFERENCES users(id)
+	);
+
+	CREATE TABLE IF NOT EXISTS resume_versions (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		resume_id INTEGER NOT NULL,
+		r2_key TEXT NOT NULL,
+		original_filename TEXT NOT NULL,
+		version_num INTEGER NOT NULL,
+		created_at DATETIME NOT NULL,
+		FOREIGN KEY(resume_id) REFERENCES resumes(id) ON DELETE CASCADE
+	);
+
+	CREATE TABLE IF NOT EXISTS resume_views (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		resume_id INTEGER NOT NULL,
+		viewed_at DATETIME NOT NULL,
+		referrer TEXT DEFAULT '' NOT NULL,
+		user_agent TEXT DEFAULT '' NOT NULL,
+		ip_hash TEXT DEFAULT '' NOT NULL,
+		device_type TEXT DEFAULT 'desktop' NOT NULL,
+		FOREIGN KEY(resume_id) REFERENCES resumes(id) ON DELETE CASCADE
 	);
 
 	CREATE TABLE IF NOT EXISTS sessions (
@@ -44,11 +68,17 @@ func ensureSQLiteSchema(db *sql.DB) error {
 
 	CREATE INDEX IF NOT EXISTS idx_resumes_slug ON resumes(slug);
 	CREATE INDEX IF NOT EXISTS idx_resumes_user_id ON resumes(user_id);
+	CREATE INDEX IF NOT EXISTS idx_versions_resume_id ON resume_versions(resume_id);
+	CREATE INDEX IF NOT EXISTS idx_views_resume_id ON resume_views(resume_id);
+	CREATE INDEX IF NOT EXISTS idx_views_viewed_at ON resume_views(viewed_at);
 	`
 	if _, err := db.Exec(query); err != nil {
 		return err
 	}
 	_, _ = db.Exec("ALTER TABLE resumes ADD COLUMN views_count INTEGER DEFAULT 0 NOT NULL")
+	_, _ = db.Exec("ALTER TABLE resumes ADD COLUMN passcode_hash TEXT DEFAULT '' NOT NULL")
+	_, _ = db.Exec("ALTER TABLE resumes ADD COLUMN expires_at DATETIME")
+	_, _ = db.Exec("ALTER TABLE resumes ADD COLUMN allow_download INTEGER DEFAULT 1 NOT NULL")
 	return nil
 }
 
