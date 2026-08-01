@@ -9,7 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Pull and deploy via Docker
+      - name: Pull, build and restart via PM2
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -17,12 +17,8 @@ jobs:
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
             set -e
-            if [ -d "/srv/apps/apsthira" ]; then
-              cd /srv/apps/apsthira
-            elif [ -d "/srv/apsthira" ]; then
-              cd /srv/apsthira
-            fi
+            export PATH="$PATH:/usr/local/go/bin:$HOME/go/bin:$HOME/.nvm/versions/node/v24.18.1/bin:$HOME/.bun/bin"
+            cd /srv/apps/apsthira
             git pull origin main
-            docker compose down || true
-            docker compose up -d --build
-            docker compose ps
+            ./build.sh
+            ./pm2.sh
