@@ -3,641 +3,564 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Apsthira</title>
+    <title>Dashboard — Apsthira</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #faf8f5;
+            --card-bg: #ffffff;
+            --text: #1c1917;
+            --muted: #78716c;
+            --border: #1c1917;
+            --accent: #d97706;
+            --shadow: 4px 4px 0px #1c1917;
+            --shadow-hover: 6px 6px 0px #1c1917;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background-color: #008080; /* Teal desktop background */
-            margin: 0;
-            padding: 0;
-            font-family: Tahoma, Arial, sans-serif;
-            font-size: 13px;
-            color: #000000;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 14px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            padding: 24px;
         }
 
-        /* Main Window */
-        .window {
-            background: #c0c0c0;
-            border: 1px solid #000000;
-            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080, 1px 1px 0px 0px #000000;
-            display: flex;
-            flex-direction: column;
-            max-width: 1050px;
-            width: 95%;
-            margin: 20px auto;
-            flex-grow: 1;
-        }
-
-        .title-bar {
-            background: linear-gradient(90deg, #000080, #1084d0);
-            color: #ffffff;
-            padding: 3px 4px;
+        /* Top Header */
+        header {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto 24px auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: bold;
-            font-size: 12px;
-            margin: 2px 2px 0 2px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border);
         }
 
-        .title-bar-text {
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: -0.5px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
         }
 
-        .title-bar-controls {
-            display: flex;
-            gap: 2px;
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            background: #f5f2eb;
+            border: 1px solid var(--border);
+            padding: 2px 6px;
+            font-weight: 600;
         }
 
-        .title-bar-button {
-            width: 16px;
-            height: 14px;
-            background: #c0c0c0;
-            border: 1px solid #000000;
-            box-shadow: inset 1px 1px 0px 0px #ffffff, inset -1px -1px 0px 0px #808080;
+        .user-nav {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            font-weight: bold;
-            color: #000000;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .title-bar-button:active {
-            box-shadow: inset 1px 1px 0px 0px #808080, inset -1px -1px 0px 0px #ffffff;
-        }
-
-        .menu-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 8px;
-            font-size: 12px;
-            border-bottom: 1px solid #808080;
-            background: #c0c0c0;
-        }
-
-        .menu-items {
-            display: flex;
             gap: 12px;
         }
 
-        .menu-items span {
-            cursor: default;
-        }
-
-        .menu-items span::first-letter {
-            text-decoration: underline;
-        }
-
-        .nav-actions {
-            display: flex;
+        .btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            padding: 6px 14px;
+            text-decoration: none;
+            box-shadow: 3px 3px 0px #1c1917;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            cursor: pointer;
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            outline: none;
         }
 
-        /* 3D Outset Frame Panel */
-        .outset-panel {
-            background: #c0c0c0;
-            border: 1px solid #000000;
-            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080;
-            padding: 16px;
-            box-sizing: border-box;
+        .btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px #1c1917;
         }
 
-        /* Layout structure */
+        .btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px #1c1917;
+        }
+
+        .btn-primary {
+            background: #1c1917;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #27272a;
+            color: #ffffff;
+        }
+
+        .btn-danger {
+            background: #fef2f2;
+            color: #991b1b;
+            border-color: #dc2626;
+            box-shadow: 3px 3px 0px #dc2626;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 5px 5px 0px #dc2626;
+        }
+
+        /* Layout Grid */
         .workspace {
-            padding: 16px;
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 20px;
+            grid-template-columns: 360px 1fr;
+            gap: 24px;
             flex-grow: 1;
         }
 
-        @media (max-width: 768px) {
-            .workspace {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 860px) {
+            .workspace { grid-template-columns: 1fr; }
         }
 
-        .panel-title {
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 12px;
+        .panel {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow);
+            padding: 24px;
             display: flex;
-            align-items: center;
-            gap: 6px;
-            border-bottom: 1px solid #808080;
-            padding-bottom: 4px;
+            flex-direction: column;
         }
 
-        .form-group {
-            margin-bottom: 14px;
+        .panel-header {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+
+        .form-group { margin-bottom: 16px; }
 
         .form-group label {
             display: block;
-            margin-bottom: 4px;
-            font-weight: bold;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 6px;
         }
 
         .input-wrapper {
             display: flex;
             align-items: center;
+            border: 2px solid var(--border);
             background: #ffffff;
-            border: 1px solid #808080;
-            box-shadow: inset 1px 1px 0px 0px #000000, inset -1px -1px 0px 0px #ffffff;
         }
 
         .input-wrapper span.prefix {
-            padding-left: 8px;
-            color: #808080;
-            font-family: monospace;
-            font-size: 13px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--muted);
+            padding-left: 10px;
             user-select: none;
         }
 
         .form-control {
             width: 100%;
-            background: #ffffff;
-            color: #000000;
-            border: 1px solid #808080;
-            box-shadow: inset 1px 1px 0px 0px #000000, inset -1px -1px 0px 0px #ffffff;
-            padding: 4px 6px;
-            outline: none;
-            box-sizing: border-box;
-            font-family: Tahoma, Arial, sans-serif;
+            background: transparent;
+            border: none;
+            padding: 8px 10px;
+            font-family: 'Inter', sans-serif;
             font-size: 13px;
+            color: var(--text);
+            outline: none;
         }
 
-        .input-wrapper .form-control {
-            border: none;
-            box-shadow: none;
-            padding-left: 4px;
+        .form-control.bordered {
+            border: 2px solid var(--border);
+            background: #ffffff;
         }
 
         .form-control:focus {
-            outline: 1px dotted #000000;
+            background: #fffdfa;
         }
 
         /* Dropzone */
         .dropzone {
-            border: 1px dashed #808080;
-            background: #ffffff;
-            padding: 24px 12px;
+            border: 2px dashed var(--border);
+            background: #faf8f5;
+            padding: 28px 16px;
             text-align: center;
             cursor: pointer;
-            box-shadow: inset 1px 1px 0px 0px #e0e0e0;
+            transition: background 0.15s ease;
         }
 
-        .dropzone:hover {
-            background: #f0f0f0;
-        }
+        .dropzone:hover { background: #f2eee5; }
 
         .dropzone .main-text {
-            font-weight: bold;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
             display: block;
             margin-bottom: 4px;
         }
 
         .dropzone .sub-text {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
-            color: #808080;
+            color: var(--muted);
         }
 
         .file-info {
             display: none;
             align-items: center;
             justify-content: space-between;
-            background: #ffffcc;
-            border: 1px solid #808080;
-            padding: 6px 10px;
+            background: #fef3c7;
+            border: 2px solid var(--border);
+            padding: 8px 12px;
             margin-top: 8px;
-        }
-
-        .file-info span {
-            font-family: monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            max-width: 80%;
         }
 
         .file-info button {
             background: none;
             border: none;
-            color: #ff0000;
+            color: #dc2626;
             font-weight: bold;
             cursor: pointer;
-            font-size: 14px;
-            line-height: 1;
+            font-size: 16px;
         }
 
-        .btn {
-            background: #c0c0c0;
-            color: #000000;
-            border: 1px solid #000000;
-            box-shadow: inset 1px 1px 0px 0px #ffffff, inset -1px -1px 0px 0px #808080;
-            padding: 4px 12px;
-            font-size: 12px;
-            font-family: Tahoma, Arial, sans-serif;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            outline: none;
-        }
-
-        .btn:active {
-            box-shadow: inset 1px 1px 0px 0px #808080, inset -1px -1px 0px 0px #ffffff;
-        }
-
-        .btn:focus {
-            outline: 1px dotted #000000;
-            outline-offset: -3px;
-        }
-
-        .btn-submit {
-            width: 100%;
-            font-weight: bold;
-            padding: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn-logout {
-            padding: 2px 8px;
-            font-size: 11px;
-        }
-
-        .btn-delete-account {
-            color: #ff0000;
-            padding: 2px 8px;
-            font-size: 11px;
-        }
-
-        /* Resumes List Table */
-        .resumes-table-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            border: 1px solid #808080;
-            box-shadow: inset 1px 1px 0px 0px #000000, inset -1px -1px 0px 0px #ffffff;
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            border: 2px solid var(--border);
             background: #ffffff;
-            min-height: 300px;
+            flex-grow: 1;
         }
 
-        table.resumes-table {
+        table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 13px;
             text-align: left;
-            font-size: 12px;
         }
 
-        table.resumes-table th {
-            background: #c0c0c0;
-            border-right: 1px solid #808080;
-            border-bottom: 1px solid #808080;
-            box-shadow: inset 1px 1px 0px 0px #ffffff;
-            padding: 4px 6px;
-            font-weight: bold;
-            position: sticky;
-            top: 0;
-            user-select: none;
+        th {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            text-transform: uppercase;
+            background: #f5f2eb;
+            border-bottom: 2px solid var(--border);
+            padding: 10px 12px;
+            font-weight: 700;
         }
 
-        table.resumes-table td {
-            padding: 6px;
-            border-right: 1px dotted #c0c0c0;
-            border-bottom: 1px solid #e0e0e0;
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e7e5e4;
             vertical-align: middle;
         }
 
-        table.resumes-table tr:hover td {
-            background: #000080;
-            color: #ffffff;
-        }
+        tr:hover td { background: #faf8f5; }
 
-        table.resumes-table tr:hover td a {
-            color: #ffffff;
-        }
-
-        table.resumes-table td a {
-            color: #0000ee;
+        td a.link-url {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: #2563eb;
             text-decoration: underline;
-            font-weight: bold;
         }
 
-        .resume-actions {
+        .actions-cell {
             display: flex;
             gap: 4px;
+            flex-wrap: wrap;
         }
 
-        .btn-action {
-            padding: 2px 6px;
+        .btn-sm {
+            padding: 3px 8px;
             font-size: 11px;
-            min-width: auto;
+            box-shadow: 2px 2px 0px #1c1917;
         }
 
-        .btn-action.btn-delete:hover {
-            color: #ff0000;
-        }
+        .btn-sm:hover { box-shadow: 3px 3px 0px #1c1917; }
 
-        /* Status Bar */
-        .status-bar {
-            display: flex;
-            background: #c0c0c0;
-            border-top: 1px solid #808080;
-            padding: 2px;
-            gap: 4px;
-            font-size: 11px;
-            margin-top: auto;
-        }
-
-        .status-field {
-            border: 1px solid #808080;
-            box-shadow: inset 1px 1px 0px 0px #ffffff;
-            padding: 2px 6px;
-            flex-grow: 1;
-            background: #c0c0c0;
-            box-sizing: border-box;
-        }
-
-        .status-field.fixed {
-            flex-grow: 0;
-            min-width: 150px;
-        }
-
-        /* Alerts */
+        /* Alert */
         .alert {
             display: none;
-            background: #ffffe0;
-            border: 1px solid #808080;
-            box-shadow: inset 1px 1px 0px 0px #ffffff;
-            color: #ff0000;
-            padding: 8px;
-            margin-bottom: 12px;
+            background: #fef2f2;
+            border: 2px solid #dc2626;
+            color: #991b1b;
+            padding: 8px 12px;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
+            margin-bottom: 16px;
         }
 
-        .spinner {
-            width: 12px;
-            height: 12px;
-            border: 2px solid rgba(0, 0, 0, 0.2);
-            border-top-color: #000000;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1c1917;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            padding: 10px 18px;
+            box-shadow: 4px 4px 0px #d97706;
             display: none;
+            z-index: 1000;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Dialogs / Modals */
+        /* Modals */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.2);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(28, 25, 23, 0.5);
+            backdrop-filter: blur(2px);
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 200;
+            z-index: 500;
         }
 
         .modal-overlay.open { display: flex; }
 
         .modal {
-            background: #c0c0c0;
-            border: 1px solid #000000;
-            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080, 2px 2px 10px rgba(0,0,0,0.5);
-            width: 100%;
-            max-width: 360px;
+            background: #ffffff;
+            border: 2px solid var(--border);
+            box-shadow: 8px 8px 0px #1c1917;
+            width: 90%;
+            max-width: 480px;
         }
 
-        .modal-body {
-            padding: 16px;
+        .modal-header {
+            background: #f5f2eb;
+            border-bottom: 2px solid var(--border);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
         }
 
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #ffffcc;
-            color: #000000;
-            border: 1px solid #000000;
-            box-shadow: inset 1px 1px 0px 0px #ffffff, 2px 2px 5px rgba(0,0,0,0.2);
-            padding: 6px 14px;
-            font-size: 12px;
-            font-weight: bold;
-            z-index: 300;
-            display: none;
+        .modal-close {
+            background: none;
+            border: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
         }
+
+        .modal-body { padding: 20px; }
 
         footer {
-            text-align: center;
-            padding: 12px;
-            color: #808080;
-            font-size: 11px;
-            text-shadow: 1px 1px 0px #ffffff;
+            max-width: 1100px;
+            width: 100%;
+            margin: 32px auto 0 auto;
+            padding-top: 16px;
+            border-top: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--muted);
         }
 
-        footer a {
-            color: #0000ee;
-            text-decoration: underline;
-        }
+        footer a { color: var(--text); text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div class="window">
-        <div class="title-bar">
-            <div class="title-bar-text">Apsthira Resume Management Console</div>
-            <div class="title-bar-controls">
-                <div class="title-bar-button">_</div>
-                <div class="title-bar-button">□</div>
-                <div class="title-bar-button">X</div>
-            </div>
+    <header>
+        <a href="/" class="logo">
+            📄 APSTHIRA <span class="badge">CONSOLE</span>
+        </a>
+        <div class="user-nav">
+            <span class="badge" style="background: #e0f2fe; color: #0369a1;">● OWNER: {{.Username}}</span>
+            <button type="button" class="btn btn-danger btn-sm" id="btn-open-delete-acc">Delete Account</button>
+            <form action="/logout" method="POST" style="margin: 0; display: inline;">
+                <button type="submit" class="btn btn-sm">Logout →</button>
+            </form>
         </div>
-        <div class="menu-bar">
-            <div class="menu-items">
-                <span>File</span>
-                <span>Edit</span>
-                <span>Tools</span>
-                <span>Help</span>
+    </header>
+
+    <div class="workspace">
+        <!-- Left: Upload Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>CREATE LINK</span>
+                <span class="badge">R2 PDF</span>
             </div>
-            <div class="nav-actions">
-                <button type="button" class="btn btn-delete-account" id="btn-open-delete-acc">Delete Account</button>
-                <form action="/logout" method="POST" style="margin: 0; display: inline;">
-                    <button type="submit" class="btn btn-logout">Logout</button>
-                </form>
-            </div>
+
+            <div id="upload-alert" class="alert"></div>
+
+            <form id="upload-form">
+                <div class="form-group">
+                    <label for="slug">Custom Link Slug</label>
+                    <div class="input-wrapper">
+                        <span class="prefix" id="slug-prefix">host/r/</span>
+                        <input type="text" id="slug" name="slug" class="form-control" placeholder="leave blank for random" pattern="^[a-zA-Z0-9-_]{3,30}$" title="3-30 characters, alphanumeric, dashes or underscores">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Upload PDF Resume</label>
+                    <div class="dropzone" id="dropzone-upload">
+                        <span class="main-text">Drag & drop PDF here</span>
+                        <span class="sub-text">or click to browse (Max 10MB)</span>
+                        <input type="file" id="upload-file-input" name="resume" accept="application/pdf" style="display: none;">
+                    </div>
+                    <div class="file-info" id="upload-file-info">
+                        <span id="upload-file-name">filename.pdf</span>
+                        <button type="button" id="btn-remove-upload-file">&times;</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="btn-upload-submit" style="width: 100%; justify-content: center; padding: 10px;">
+                    <span id="btn-upload-text">Generate Static Link →</span>
+                </button>
+            </form>
         </div>
 
-        <div class="workspace">
-            <!-- Left: Create Resume Link -->
-            <div class="outset-panel">
-                <div class="panel-title">Create Resume Link</div>
-                <div id="upload-alert" class="alert"></div>
-
-                <form id="upload-form">
-                    <div class="form-group">
-                        <label for="slug">Custom Link Slug:</label>
-                        <div class="input-wrapper">
-                            <span class="prefix" id="slug-prefix">host/r/</span>
-                            <input type="text" id="slug" name="slug" class="form-control" placeholder="leave blank for random" pattern="^[a-zA-Z0-9-_]{3,30}$" title="3-30 characters, alphanumeric, dashes or underscores">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Select PDF Resume:</label>
-                        <div class="dropzone" id="dropzone-upload">
-                            <span class="main-text">Drag & drop resume PDF</span>
-                            <span class="sub-text">or click to browse. Max size 10MB</span>
-                            <input type="file" id="upload-file-input" name="resume" accept="application/pdf" style="display: none;">
-                        </div>
-                        <div class="file-info" id="upload-file-info">
-                            <span id="upload-file-name">filename.pdf</span>
-                            <button type="button" id="btn-remove-upload-file">&times;</button>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-submit" id="btn-upload-submit">
-                        <div class="spinner" id="btn-upload-spinner"></div>
-                        <span id="btn-upload-text">Generate Static Link</span>
-                    </button>
-                </form>
+        <!-- Right: Links Table -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>ACTIVE RESUME LINKS</span>
+                <span class="badge" style="background: #fef3c7; color: #92400e;">MAX 5 LINKS</span>
             </div>
 
-            <!-- Right: Active Resumes -->
-            <div class="outset-panel" style="display: flex; flex-direction: column;">
-                <div class="panel-title">Active Database Links</div>
-                <div id="list-alert" class="alert"></div>
+            <div id="list-alert" class="alert"></div>
 
-                <div class="resumes-table-container">
-                    <table class="resumes-table">
-                        <thead>
-                            <tr>
-                                <th>Static URL</th>
-                                <th>Source Filename</th>
-                                <th style="text-align: center; width: 80px;">Views</th>
-                                <th>Last Updated</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="resumes-list">
-                            {{if not .Resumes}}
-                            <tr id="empty-row">
-                                <td colspan="5" style="text-align: center; padding: 24px; color: #808080; font-style: italic;">
-                                    No records found in database. Use the panel on the left to upload a new resume.
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Static Link</th>
+                            <th>Filename</th>
+                            <th style="text-align: center;">Views</th>
+                            <th>Last Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resumes-list">
+                        {{if not .Resumes}}
+                        <tr id="empty-row">
+                            <td colspan="5" style="text-align: center; padding: 32px; color: var(--muted); font-style: italic;">
+                                No resume links generated yet. Use the panel on the left to upload your first resume.
+                            </td>
+                        </tr>
+                        {{else}}
+                            {{range .Resumes}}
+                            <tr id="item-{{.Slug}}">
+                                <td><a href="/r/{{.Slug}}" target="_blank" class="link-url">/r/{{.Slug}}</a></td>
+                                <td id="filename-{{.Slug}}" style="font-weight: 500;">{{.OriginalFilename}}</td>
+                                <td id="views-{{.Slug}}" style="font-weight: bold; text-align: center; font-family: 'JetBrains Mono', monospace;">{{.ViewsCount}}</td>
+                                <td id="date-{{.Slug}}" style="font-family: 'JetBrains Mono', monospace; font-size: 11px;">{{.UpdatedAt.Format "Jan 02, 2006"}}</td>
+                                <td>
+                                    <div class="actions-cell">
+                                        <button class="btn btn-sm" onclick="copyLink('{{.Slug}}')">Copy</button>
+                                        <button class="btn btn-sm" onclick="openAnalyticsModal('{{.Slug}}')">Stats</button>
+                                        <button class="btn btn-sm" onclick="openVersionsModal('{{.Slug}}')">Versions</button>
+                                        <button class="btn btn-sm" onclick="openSettingsModal('{{.Slug}}', '{{if .PasscodeHash}}true{{end}}', '{{if .ExpiresAt}}{{.ExpiresAt.Format "2006-01-02T15:04"}}{{end}}', {{.AllowDownload}})">Settings</button>
+                                        <button class="btn btn-sm" onclick="openQRModal('{{.Slug}}')">QR</button>
+                                        <button class="btn btn-sm" onclick="openUpdateModal('{{.Slug}}')">Replace</button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteResume('{{.Slug}}')">Delete</button>
+                                    </div>
                                 </td>
                             </tr>
-                            {{else}}
-                                {{range .Resumes}}
-                                <tr id="item-{{.Slug}}">
-                                    <td><a href="/r/{{.Slug}}" target="_blank">/r/{{.Slug}}</a></td>
-                                    <td id="filename-{{.Slug}}">{{.OriginalFilename}}</td>
-                                    <td id="views-{{.Slug}}" style="font-weight: bold; text-align: center; font-family: monospace;">{{.ViewsCount}}</td>
-                                    <td id="date-{{.Slug}}">{{.UpdatedAt.Format "Jan 02, 2006, 03:04 PM"}}</td>
-                                    <td>
-                                        <div class="resume-actions">
-                                            <button class="btn btn-action" onclick="copyLink('{{.Slug}}')" title="Copy Link">Copy</button>
-                                            <button class="btn btn-action" onclick="openAnalyticsModal('{{.Slug}}')" title="View Stats">Stats</button>
-                                            <button class="btn btn-action" onclick="openVersionsModal('{{.Slug}}')" title="Version History">Versions</button>
-                                            <button class="btn btn-action" onclick="openSettingsModal('{{.Slug}}', '{{if .PasscodeHash}}true{{end}}', '{{if .ExpiresAt}}{{.ExpiresAt.Format "2006-01-02T15:04"}}{{end}}', {{.AllowDownload}})" title="Security Settings">Settings</button>
-                                            <button class="btn btn-action" onclick="openQRModal('{{.Slug}}')" title="QR Code">QR</button>
-                                            <button class="btn btn-action" onclick="openUpdateModal('{{.Slug}}')" title="Replace PDF">Replace</button>
-                                            <button class="btn btn-action btn-delete" onclick="deleteResume('{{.Slug}}')" title="Delete Resume">Delete</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {{end}}
                             {{end}}
-                        </tbody>
-                    </table>
-                </div>
+                        {{end}}
+                    </tbody>
+                </table>
             </div>
-        </div>
-
-        <!-- Status Bar -->
-        <div class="status-bar">
-            <div class="status-field">Uploader Profile: {{.Username}}</div>
-            <div class="status-field fixed">Storage Limit: 5 Links Max</div>
-            <div class="status-field fixed">System Status: Connected</div>
         </div>
     </div>
 
     <footer>
-        &copy; 2026 Apsthira. Securely hosted via Go & R2. | <a href="https://github.com/libsib/apsthira" target="_blank">GitHub</a>
+        <div>&copy; 2026 Apsthira. Securely hosted via Go & R2.</div>
+        <div><a href="https://github.com/libsib/apsthira" target="_blank">Source Repository</a></div>
     </footer>
 
     <!-- Analytics Modal -->
     <div class="modal-overlay" id="analytics-modal-overlay">
         <div class="modal" style="max-width: 520px;">
-            <div class="title-bar">
-                <div class="title-bar-text">Visitor Insights: <span id="analytics-slug-title">/r/slug</span></div>
-                <button type="button" class="title-bar-button" onclick="closeAnalyticsModal()">X</button>
+            <div class="modal-header">
+                <span>VISITOR ANALYTICS: <span id="analytics-slug-title">/r/slug</span></span>
+                <button type="button" class="modal-close" onclick="closeAnalyticsModal()">✕</button>
             </div>
             <div class="modal-body">
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">
-                    <div style="background: #fff; border: 1px solid #808080; padding: 8px; text-align: center;">
-                        <div style="font-size: 10px; color: #555;">TOTAL VIEWS</div>
-                        <div id="stats-total-views" style="font-weight: bold; font-size: 18px; font-family: monospace;">0</div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
+                    <div style="background: #faf8f5; border: 1.5px solid var(--border); padding: 12px; text-align: center;">
+                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted);">TOTAL VIEWS</div>
+                        <div id="stats-total-views" style="font-family: 'JetBrains Mono', monospace; font-weight: bold; font-size: 20px;">0</div>
                     </div>
-                    <div style="background: #fff; border: 1px solid #808080; padding: 8px; text-align: center;">
-                        <div style="font-size: 10px; color: #555;">TOP SOURCE</div>
-                        <div id="stats-top-referrer" style="font-weight: bold; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</div>
+                    <div style="background: #faf8f5; border: 1.5px solid var(--border); padding: 12px; text-align: center;">
+                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted);">TOP SOURCE</div>
+                        <div id="stats-top-referrer" style="font-weight: bold; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</div>
                     </div>
-                    <div style="background: #fff; border: 1px solid #808080; padding: 8px; text-align: center;">
-                        <div style="font-size: 10px; color: #555;">MAIN DEVICE</div>
-                        <div id="stats-top-device" style="font-weight: bold; font-size: 11px;">Desktop</div>
+                    <div style="background: #faf8f5; border: 1.5px solid var(--border); padding: 12px; text-align: center;">
+                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted);">MAIN DEVICE</div>
+                        <div id="stats-top-device" style="font-weight: bold; font-size: 12px;">DESKTOP</div>
                     </div>
                 </div>
 
-                <div style="background: #fff; border: 1px solid #808080; padding: 12px; margin-bottom: 12px;">
-                    <div style="font-weight: bold; margin-bottom: 8px; font-size: 11px;">Daily Views (Last 14 Days):</div>
-                    <div id="daily-chart-container" style="display: flex; align-items: flex-end; gap: 4px; height: 90px; border-bottom: 1px solid #808080; padding-bottom: 4px;"></div>
+                <div style="background: #faf8f5; border: 1.5px solid var(--border); padding: 14px; margin-bottom: 16px;">
+                    <div style="font-family: 'JetBrains Mono', monospace; font-weight: 700; margin-bottom: 10px; font-size: 11px;">DAILY VIEWS (LAST 14 DAYS):</div>
+                    <div id="daily-chart-container" style="display: flex; align-items: flex-end; gap: 6px; height: 90px; border-bottom: 1.5px solid var(--border); padding-bottom: 4px;"></div>
                 </div>
 
-                <div style="background: #fff; border: 1px solid #808080; padding: 10px;">
-                    <div style="font-weight: bold; margin-bottom: 6px; font-size: 11px;">Top Traffic Sources:</div>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 11px;" id="referrers-table">
+                <div style="background: #faf8f5; border: 1.5px solid var(--border); padding: 14px;">
+                    <div style="font-family: 'JetBrains Mono', monospace; font-weight: 700; margin-bottom: 8px; font-size: 11px;">TRAFFIC SOURCES:</div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;" id="referrers-table">
                         <tbody></tbody>
                     </table>
                 </div>
 
-                <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+                <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
                     <button type="button" class="btn" onclick="closeAnalyticsModal()">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Version History Modal -->
+    <!-- Versions Modal -->
     <div class="modal-overlay" id="versions-modal-overlay">
-        <div class="modal" style="max-width: 480px;">
-            <div class="title-bar">
-                <div class="title-bar-text">Version History: <span id="versions-slug-title">/r/slug</span></div>
-                <button type="button" class="title-bar-button" onclick="closeVersionsModal()">X</button>
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <span>REVISION HISTORY: <span id="versions-slug-title">/r/slug</span></span>
+                <button type="button" class="modal-close" onclick="closeVersionsModal()">✕</button>
             </div>
             <div class="modal-body">
-                <p style="font-size: 11px; margin-top: 0;">Revisions saved during replacements. You can restore any past revision as active.</p>
-                <div style="max-height: 250px; overflow-y: auto; border: 1px solid #808080; background: #fff; margin-bottom: 12px;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 11px;" id="versions-table">
+                <p style="font-size: 12px; color: var(--muted); margin-bottom: 12px;">Stored historical revisions (Max 3 retained). You can restore any past revision as active.</p>
+                <div style="max-height: 260px; overflow-y: auto; border: 1.5px solid var(--border); background: #fff; margin-bottom: 16px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;" id="versions-table">
                         <thead>
-                            <tr style="background: #c0c0c0; border-bottom: 1px solid #808080;">
-                                <th style="padding: 4px; text-align: left;">Ver</th>
-                                <th style="padding: 4px; text-align: left;">Filename</th>
-                                <th style="padding: 4px; text-align: left;">Uploaded</th>
-                                <th style="padding: 4px; text-align: center;">Action</th>
+                            <tr style="background: #f5f2eb; border-bottom: 1.5px solid var(--border);">
+                                <th style="padding: 6px; text-align: left;">Ver</th>
+                                <th style="padding: 6px; text-align: left;">Filename</th>
+                                <th style="padding: 6px; text-align: left;">Uploaded</th>
+                                <th style="padding: 6px; text-align: center;">Action</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -650,12 +573,12 @@
         </div>
     </div>
 
-    <!-- Security & Expiration Settings Modal -->
+    <!-- Settings Modal -->
     <div class="modal-overlay" id="settings-modal-overlay">
-        <div class="modal" style="max-width: 400px;">
-            <div class="title-bar">
-                <div class="title-bar-text">Link Settings: <span id="settings-slug-title">/r/slug</span></div>
-                <button type="button" class="title-bar-button" onclick="closeSettingsModal()">X</button>
+        <div class="modal" style="max-width: 420px;">
+            <div class="modal-header">
+                <span>LINK SETTINGS: <span id="settings-slug-title">/r/slug</span></span>
+                <button type="button" class="modal-close" onclick="closeSettingsModal()">✕</button>
             </div>
             <div class="modal-body">
                 <div id="settings-alert" class="alert"></div>
@@ -664,29 +587,29 @@
                     <input type="hidden" id="settings-slug">
 
                     <div class="form-group">
-                        <label for="settings-passcode">PIN / Passcode Protection:</label>
-                        <input type="password" id="settings-passcode" class="form-control" placeholder="Leave blank to keep existing passcode">
-                        <label style="font-weight: normal; margin-top: 4px; font-size: 11px;">
+                        <label for="settings-passcode">PIN / Passcode Protection</label>
+                        <input type="password" id="settings-passcode" class="form-control bordered" placeholder="Leave blank to keep existing">
+                        <label style="font-family: 'JetBrains Mono', monospace; font-weight: normal; margin-top: 6px; font-size: 11px;">
                             <input type="checkbox" id="settings-remove-passcode"> Remove passcode protection
                         </label>
                     </div>
 
                     <div class="form-group">
-                        <label for="settings-expiry">Automatic Expiration Date:</label>
-                        <input type="datetime-local" id="settings-expiry" class="form-control">
-                        <label style="font-weight: normal; margin-top: 4px; font-size: 11px;">
+                        <label for="settings-expiry">Automatic Expiration Date</label>
+                        <input type="datetime-local" id="settings-expiry" class="form-control bordered">
+                        <label style="font-family: 'JetBrains Mono', monospace; font-weight: normal; margin-top: 6px; font-size: 11px;">
                             <input type="checkbox" id="settings-clear-expiry"> Clear expiration date
                         </label>
                     </div>
 
                     <div class="form-group">
-                        <label style="font-weight: normal; font-size: 12px;">
+                        <label style="font-family: 'JetBrains Mono', monospace; font-weight: normal; font-size: 12px;">
                             <input type="checkbox" id="settings-allow-download" checked> Allow direct PDF downloads for visitors
                         </label>
                     </div>
 
-                    <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;">
-                        <button type="submit" class="btn" style="font-weight: bold;">Save Settings</button>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary">Save Settings</button>
                         <button type="button" class="btn" onclick="closeSettingsModal()">Cancel</button>
                     </div>
                 </form>
@@ -694,61 +617,30 @@
         </div>
     </div>
 
-    <!-- QR Code Modal -->
+    <!-- QR Modal -->
     <div class="modal-overlay" id="qr-modal-overlay">
-        <div class="modal" style="max-width: 320px;">
-            <div class="title-bar">
-                <div class="title-bar-text">QR Code: <span id="qr-slug-title">/r/slug</span></div>
-                <button type="button" class="title-bar-button" onclick="closeQRModal()">X</button>
+        <div class="modal" style="max-width: 340px;">
+            <div class="modal-header">
+                <span>QR CODE: <span id="qr-slug-title">/r/slug</span></span>
+                <button type="button" class="modal-close" onclick="closeQRModal()">✕</button>
             </div>
             <div class="modal-body" style="text-align: center;">
-                <p style="margin-top: 0; font-size: 11px; font-weight: bold;">Scan with phone camera to view resume:</p>
-                <img id="qr-img" src="" alt="QR Code" style="width: 180px; height: 180px; border: 1px solid #808080; background: #fff; padding: 6px;">
-                <div style="margin-top: 12px; display: flex; gap: 6px; justify-content: center;">
-                    <a id="qr-download-btn" href="#" download="resume-qr.png" class="btn">Download QR PNG</a>
-                    <button type="button" class="btn" onclick="closeQRModal()">Close</button>
+                <p style="margin-top: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; margin-bottom: 12px;">Scan with camera to view resume:</p>
+                <img id="qr-img" src="" alt="QR Code" style="width: 180px; height: 180px; border: 2px solid var(--border); background: #fff; padding: 8px;">
+                <div style="margin-top: 16px; display: flex; gap: 8px; justify-content: center;">
+                    <a id="qr-download-btn" href="#" download="resume-qr.png" class="btn btn-primary btn-sm">Download PNG</a>
+                    <button type="button" class="btn btn-sm" onclick="closeQRModal()">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Delete Account Modal -->
-    <div class="modal-overlay" id="delete-acc-modal-overlay">
-        <div class="modal">
-            <div class="title-bar">
-                <div class="title-bar-text">Warning: Delete Account</div>
-                <button class="title-bar-button" id="btn-close-delete-acc">X</button>
-            </div>
-            <div class="modal-body">
-                <div id="delete-acc-alert" class="alert"></div>
-
-                <div style="margin-bottom: 16px; line-height: 1.4;">
-                    <p><strong>This action is permanent and cannot be undone.</strong></p>
-                    <p style="margin-top: 8px;">Deleting your account will erase:</p>
-                    <ul style="margin-left: 16px; margin-top: 4px; color: #555555; padding-left: 0; list-style-type: square;">
-                        <li>User profile credentials</li>
-                        <li>All database resume paths</li>
-                        <li>All uploaded PDF files on R2</li>
-                    </ul>
-                </div>
-
-                <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                    <button type="button" class="btn" id="btn-confirm-delete-acc" style="font-weight: bold; color: #ff0000;">
-                        <div class="spinner" id="delete-acc-spinner"></div>
-                        <span id="delete-acc-btn-text">OK (Delete)</span>
-                    </button>
-                    <button type="button" class="btn" id="btn-cancel-delete-acc">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Replace/Update Modal -->
+    <!-- Replace File Modal -->
     <div class="modal-overlay" id="update-modal-overlay">
-        <div class="modal">
-            <div class="title-bar">
-                <div class="title-bar-text">Replace File: <span id="modal-slug-title">slug</span></div>
-                <button class="title-bar-button" id="btn-close-modal">X</button>
+        <div class="modal" style="max-width: 420px;">
+            <div class="modal-header">
+                <span>REPLACE FILE: <span id="modal-slug-title">/r/slug</span></span>
+                <button type="button" class="modal-close" id="btn-close-modal">✕</button>
             </div>
             <div class="modal-body">
                 <div id="modal-alert" class="alert"></div>
@@ -757,10 +649,10 @@
                     <input type="hidden" id="modal-slug" name="slug">
                     
                     <div class="form-group">
-                        <label>Select New PDF file:</label>
+                        <label>Select New PDF File</label>
                         <div class="dropzone" id="dropzone-update">
-                            <span class="main-text">Drag & drop new resume PDF</span>
-                            <span class="sub-text">or click to browse. Max size 10MB</span>
+                            <span class="main-text">Drag & drop new PDF here</span>
+                            <span class="sub-text">or click to browse (Max 10MB)</span>
                             <input type="file" id="update-file-input" name="resume" accept="application/pdf" style="display: none;">
                         </div>
                         <div class="file-info" id="update-file-info">
@@ -769,10 +661,9 @@
                         </div>
                     </div>
 
-                    <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;">
-                        <button type="submit" class="btn" id="btn-update-submit" style="font-weight: bold;">
-                            <div class="spinner" id="btn-update-spinner"></div>
-                            <span id="btn-update-text">Upload Replacement</span>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary" id="btn-update-submit">
+                            <span id="btn-update-text">Upload Replacement →</span>
                         </button>
                         <button type="button" class="btn" onclick="closeUpdateModal()">Cancel</button>
                     </div>
@@ -781,10 +672,34 @@
         </div>
     </div>
 
+    <!-- Delete Account Modal -->
+    <div class="modal-overlay" id="delete-acc-modal-overlay">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header" style="background: #fef2f2; color: #991b1b;">
+                <span>⚠️ DELETE ACCOUNT</span>
+                <button type="button" class="modal-close" id="btn-close-delete-acc">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="delete-acc-alert" class="alert"></div>
+
+                <div style="margin-bottom: 20px; line-height: 1.5; font-size: 13px;">
+                    <p style="font-weight: bold; color: #dc2626;">This action is permanent and cannot be undone.</p>
+                    <p style="margin-top: 8px;">Deleting your account will erase user credentials, all resume links, analytics, and uploaded R2 files.</p>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-danger" id="btn-confirm-delete-acc">
+                        <span id="delete-acc-btn-text">OK (Delete Permanent)</span>
+                    </button>
+                    <button type="button" class="btn" id="btn-cancel-delete-acc">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="toast" id="toast">Copied to clipboard!</div>
 
     <script>
-        // Set dynamic domain prefix
         const protocol = window.location.protocol;
         const host = window.location.host;
         document.getElementById('slug-prefix').innerText = `${host}/r/`;
@@ -823,15 +738,13 @@
             e.target.value = e.target.value.replace(/[^a-zA-Z0-9-_]/g, '').toLowerCase();
         });
 
-        // ------------------ File Handler Helpers ------------------
+        // Setup dropzones
         function setupDropzone(dropzone, fileInput, fileInfo, fileName, onSelect) {
             ['dragenter', 'dragover'].forEach(name => {
-                dropzone.addEventListener('dragenter', (e) => { e.preventDefault(); dropzone.style.background = '#f0f0f0'; });
-                dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.style.background = '#f0f0f0'; });
+                dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.style.background = '#f2eee5'; });
             });
             ['dragleave', 'drop'].forEach(name => {
-                dropzone.addEventListener('dragleave', (e) => { e.preventDefault(); dropzone.style.background = '#ffffff'; });
-                dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.style.background = '#ffffff'; });
+                dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.style.background = '#faf8f5'; });
             });
             dropzone.addEventListener('drop', (e) => {
                 const files = e.dataTransfer.files;
@@ -877,7 +790,6 @@
             dropzoneUpdate.style.display = 'block';
         });
 
-        // ------------------ Actions ------------------
         function copyLink(slug) {
             const url = `${protocol}//${host}/r/${slug}`;
             navigator.clipboard.writeText(url).then(() => {
@@ -887,10 +799,9 @@
             });
         }
 
-        // Create/Upload Submission
+        // Create Submit
         const uploadForm = document.getElementById('upload-form');
         const btnUploadSubmit = document.getElementById('btn-upload-submit');
-        const btnUploadSpinner = document.getElementById('btn-upload-spinner');
         const btnUploadText = document.getElementById('btn-upload-text');
 
         uploadForm.addEventListener('submit', async (e) => {
@@ -904,7 +815,6 @@
             }
 
             btnUploadSubmit.disabled = true;
-            btnUploadSpinner.style.display = 'block';
             btnUploadText.innerText = 'Uploading...';
 
             const formData = new FormData();
@@ -915,21 +825,18 @@
                 const res = await fetch('/upload', { method: 'POST', body: formData });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Upload failed');
-
-                // Success - reload page to refresh list
                 window.location.reload();
             } catch (err) {
                 uploadAlert.innerText = err.message;
                 uploadAlert.style.display = 'block';
                 btnUploadSubmit.disabled = false;
-                btnUploadSpinner.style.display = 'none';
-                btnUploadText.innerText = 'Generate Static Link';
+                btnUploadText.innerText = 'Generate Static Link →';
             }
         });
 
         // Delete Resume
         async function deleteResume(slug) {
-            if (!confirm(`Are you sure you want to delete the resume "/r/${slug}"? This action cannot be undone.`)) return;
+            if (!confirm(`Delete resume "/r/${slug}"? This action cannot be undone.`)) return;
 
             try {
                 const res = await fetch(`/r/${slug}/delete`, { method: 'POST' });
@@ -937,17 +844,8 @@
                     const data = await res.json();
                     throw new Error(data.error || 'Delete failed');
                 }
-                
-                // Remove item from UI
                 const item = document.getElementById(`item-${slug}`);
                 if (item) item.remove();
-
-                // If empty list, refresh to show empty state
-                const list = document.getElementById('resumes-list');
-                if (list.rows.length === 0 || (list.rows.length === 1 && list.rows[0].id === 'empty-row')) {
-                    window.location.reload();
-                }
-
                 toast.innerText = 'Resume deleted successfully';
                 toast.style.display = 'block';
                 setTimeout(() => toast.style.display = 'none', 2000);
@@ -956,39 +854,28 @@
             }
         }
 
-        // Modal Update Actions
+        // Update Modal
         function openUpdateModal(slug) {
             modalSlug.value = slug;
             modalSlugTitle.innerText = `/r/${slug}`;
             modalAlert.style.display = 'none';
-            
-            // reset file info
             updateFile = null;
             updateFileInput.value = '';
             updateFileInfo.style.display = 'none';
             dropzoneUpdate.style.display = 'block';
-
             updateModalOverlay.classList.add('open');
         }
 
-        function closeUpdateModal() {
-            updateModalOverlay.classList.remove('open');
-        }
-
+        function closeUpdateModal() { updateModalOverlay.classList.remove('open'); }
         btnCloseModal.addEventListener('click', closeUpdateModal);
-        updateModalOverlay.addEventListener('click', (e) => {
-            if (e.target === updateModalOverlay) closeUpdateModal();
-        });
 
         const updateForm = document.getElementById('update-form');
         const btnUpdateSubmit = document.getElementById('btn-update-submit');
-        const btnUpdateSpinner = document.getElementById('btn-update-spinner');
         const btnUpdateText = document.getElementById('btn-update-text');
 
         updateForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             modalAlert.style.display = 'none';
-
             if (!updateFile) {
                 modalAlert.innerText = 'Please select a new PDF file.';
                 modalAlert.style.display = 'block';
@@ -996,7 +883,6 @@
             }
 
             btnUpdateSubmit.disabled = true;
-            btnUpdateSpinner.style.display = 'block';
             btnUpdateText.innerText = 'Uploading...';
 
             const slug = modalSlug.value;
@@ -1008,86 +894,21 @@
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Update failed');
 
-                // Success: Close modal, update dashboard UI item details
                 closeUpdateModal();
-                
-                const fnEl = document.getElementById(`filename-${slug}`);
-                if (fnEl) fnEl.innerText = data.filename;
-
-                const dateEl = document.getElementById(`date-${slug}`);
-                if (dateEl) {
-                    const formatted = new Date(data.updated_at).toLocaleString([], {
-                        month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-                    });
-                    dateEl.innerText = `Updated: ${formatted}`;
-                }
-
                 toast.innerText = 'Resume replaced successfully!';
                 toast.style.display = 'block';
                 setTimeout(() => toast.style.display = 'none', 2000);
+                window.location.reload();
             } catch (err) {
                 modalAlert.innerText = err.message;
                 modalAlert.style.display = 'block';
             } finally {
                 btnUpdateSubmit.disabled = false;
-                btnUpdateSpinner.style.display = 'none';
-                btnUpdateText.innerText = 'Upload Replacement';
+                btnUpdateText.innerText = 'Upload Replacement →';
             }
         });
 
-        // ------------------ Delete Account Flow ------------------
-        const btnOpenDeleteAcc = document.getElementById('btn-open-delete-acc');
-        const deleteAccModalOverlay = document.getElementById('delete-acc-modal-overlay');
-        const btnCloseDeleteAcc = document.getElementById('btn-close-delete-acc');
-        const btnCancelDeleteAcc = document.getElementById('btn-cancel-delete-acc');
-        const btnConfirmDeleteAcc = document.getElementById('btn-confirm-delete-acc');
-        const deleteAccSpinner = document.getElementById('delete-acc-spinner');
-        const deleteAccBtnText = document.getElementById('delete-acc-btn-text');
-        const deleteAccAlert = document.getElementById('delete-acc-alert');
-
-        btnOpenDeleteAcc.addEventListener('click', () => {
-            deleteAccAlert.style.display = 'none';
-            deleteAccModalOverlay.classList.add('open');
-        });
-
-        function closeDeleteAccModal() {
-            deleteAccModalOverlay.classList.remove('open');
-        }
-
-        btnCloseDeleteAcc.addEventListener('click', closeDeleteAccModal);
-        btnCancelDeleteAcc.addEventListener('click', closeDeleteAccModal);
-        deleteAccModalOverlay.addEventListener('click', (e) => {
-            if (e.target === deleteAccModalOverlay) closeDeleteAccModal();
-        });
-
-        btnConfirmDeleteAcc.addEventListener('click', async () => {
-            deleteAccAlert.style.display = 'none';
-            
-            btnConfirmDeleteAcc.disabled = true;
-            deleteAccSpinner.style.display = 'block';
-            deleteAccBtnText.innerText = 'Deleting...';
-
-            try {
-                const res = await fetch('/delete-account', { method: 'POST' });
-                const data = await res.json();
-                
-                if (!res.ok) {
-                    throw new Error(data.error || 'Failed to delete account.');
-                }
-
-                // Redirect to landing page on successful deletion
-                window.location.href = '/';
-            } catch (err) {
-                deleteAccAlert.innerText = err.message;
-                deleteAccAlert.style.display = 'block';
-                
-                btnConfirmDeleteAcc.disabled = false;
-                deleteAccSpinner.style.display = 'none';
-                deleteAccBtnText.innerText = 'OK (Delete)';
-            }
-        });
-
-        // ------------------ Analytics Modal ------------------
+        // Analytics Modal
         async function openAnalyticsModal(slug) {
             document.getElementById('analytics-slug-title').innerText = `/r/${slug}`;
             const totalEl = document.getElementById('stats-total-views');
@@ -1097,9 +918,8 @@
             const refTableBody = document.querySelector('#referrers-table tbody');
 
             totalEl.innerText = '...';
-            chartContainer.innerHTML = '<div style="margin: auto;">Loading stats...</div>';
+            chartContainer.innerHTML = '<div style="margin: auto; font-family: monospace;">Loading...</div>';
             refTableBody.innerHTML = '';
-
             document.getElementById('analytics-modal-overlay').classList.add('open');
 
             try {
@@ -1108,16 +928,9 @@
                 const data = await res.json();
 
                 totalEl.innerText = data.total_views || 0;
+                refEl.innerText = (data.top_referrers && data.top_referrers.length > 0) ? data.top_referrers[0].referrer : 'Direct / Email';
 
-                // Top Referrer
-                if (data.top_referrers && data.top_referrers.length > 0) {
-                    refEl.innerText = data.top_referrers[0].referrer;
-                } else {
-                    refEl.innerText = 'Direct / Email';
-                }
-
-                // Main Device
-                let maxDev = 'Desktop', maxCnt = 0;
+                let maxDev = 'DESKTOP', maxCnt = 0;
                 if (data.device_types) {
                     for (const [dev, cnt] of Object.entries(data.device_types)) {
                         if (cnt > maxCnt) { maxCnt = cnt; maxDev = dev; }
@@ -1125,50 +938,44 @@
                 }
                 devEl.innerText = maxDev.toUpperCase();
 
-                // Daily Chart
                 chartContainer.innerHTML = '';
                 const days = data.daily_views || [];
                 if (days.length === 0) {
-                    chartContainer.innerHTML = '<div style="margin: auto; color: #808080; font-style: italic;">No recent views recorded.</div>';
+                    chartContainer.innerHTML = '<div style="margin: auto; color: var(--muted); font-style: italic;">No recent views recorded.</div>';
                 } else {
                     const maxVal = Math.max(...days.map(d => d.count), 1);
                     days.forEach(d => {
-                        const pct = Math.max(10, Math.round((d.count / maxVal) * 100));
+                        const pct = Math.max(12, Math.round((d.count / maxVal) * 100));
                         const col = document.createElement('div');
                         col.style.flex = '1';
                         col.style.height = `${pct}%`;
-                        col.style.background = '#000080';
-                        col.style.borderRadius = '2px 2px 0 0';
+                        col.style.background = '#1c1917';
                         col.title = `${d.date}: ${d.count} views`;
                         chartContainer.appendChild(col);
                     });
                 }
 
-                // Referrers Table
                 if (data.top_referrers && data.top_referrers.length > 0) {
                     refTableBody.innerHTML = data.top_referrers.map(r => `
-                        <tr style="border-bottom: 1px dotted #ccc;">
-                            <td style="padding: 3px;">${r.referrer}</td>
-                            <td style="padding: 3px; font-weight: bold; text-align: right; font-family: monospace;">${r.count}</td>
+                        <tr style="border-bottom: 1px solid #e7e5e4;">
+                            <td style="padding: 6px;">${r.referrer}</td>
+                            <td style="padding: 6px; font-weight: bold; text-align: right; font-family: 'JetBrains Mono', monospace;">${r.count}</td>
                         </tr>
                     `).join('');
                 } else {
-                    refTableBody.innerHTML = '<tr><td colspan="2" style="padding: 4px; color: #808080; font-style: italic;">No traffic sources recorded yet.</td></tr>';
+                    refTableBody.innerHTML = '<tr><td colspan="2" style="padding: 6px; color: var(--muted); font-style: italic;">No traffic sources recorded yet.</td></tr>';
                 }
             } catch (err) {
                 chartContainer.innerHTML = `<div style="color: red; padding: 8px;">${err.message}</div>`;
             }
         }
-        function closeAnalyticsModal() {
-            document.getElementById('analytics-modal-overlay').classList.remove('open');
-        }
+        function closeAnalyticsModal() { document.getElementById('analytics-modal-overlay').classList.remove('open'); }
 
-        // ------------------ Version History Modal ------------------
+        // Versions Modal
         async function openVersionsModal(slug) {
             document.getElementById('versions-slug-title').innerText = `/r/${slug}`;
             const tbody = document.querySelector('#versions-table tbody');
-            tbody.innerHTML = '<tr><td colspan="4" style="padding: 8px; text-align: center;">Loading version history...</td></tr>';
-
+            tbody.innerHTML = '<tr><td colspan="4" style="padding: 12px; text-align: center;">Loading version history...</td></tr>';
             document.getElementById('versions-modal-overlay').classList.add('open');
 
             try {
@@ -1177,31 +984,29 @@
                 const versions = await res.json();
 
                 if (!versions || versions.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="padding: 8px; text-align: center; color: #808080;">No past revisions stored yet.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="4" style="padding: 12px; text-align: center; color: var(--muted);">No past revisions stored yet.</td></tr>';
                     return;
                 }
 
                 tbody.innerHTML = versions.map((v, idx) => `
-                    <tr style="border-bottom: 1px dotted #ccc;">
-                        <td style="padding: 4px; font-weight: bold;">v${v.version_num}</td>
-                        <td style="padding: 4px;">${v.original_filename}</td>
-                        <td style="padding: 4px;">${new Date(v.created_at).toLocaleDateString()}</td>
-                        <td style="padding: 4px; text-align: center;">
-                            <a href="/r/${slug}/raw?v=${v.id}&dl=1" target="_blank" class="btn btn-action" style="padding: 1px 4px;">DL</a>
-                            ${idx === 0 ? '<span style="color: green; font-weight: bold; margin-left: 4px;">Active</span>' : `<button type="button" class="btn btn-action" style="padding: 1px 4px;" onclick="rollbackVersion('${slug}', ${v.id})">Restore</button>`}
+                    <tr style="border-bottom: 1px solid #e7e5e4;">
+                        <td style="padding: 6px; font-weight: bold; font-family: 'JetBrains Mono', monospace;">v${v.version_num}</td>
+                        <td style="padding: 6px;">${v.original_filename}</td>
+                        <td style="padding: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px;">${new Date(v.created_at).toLocaleDateString()}</td>
+                        <td style="padding: 6px; text-align: center;">
+                            <a href="/r/${slug}/raw?v=${v.id}&dl=1" target="_blank" class="btn btn-sm" style="padding: 2px 6px;">DL</a>
+                            ${idx === 0 ? '<span style="color: #059669; font-weight: bold; margin-left: 4px; font-family: monospace;">[Active]</span>' : `<button type="button" class="btn btn-sm" style="padding: 2px 6px;" onclick="rollbackVersion('${slug}', ${v.id})">Restore</button>`}
                         </td>
                     </tr>
                 `).join('');
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="4" style="padding: 8px; color: red;">${err.message}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="padding: 12px; color: red;">${err.message}</td></tr>`;
             }
         }
-        function closeVersionsModal() {
-            document.getElementById('versions-modal-overlay').classList.remove('open');
-        }
+        function closeVersionsModal() { document.getElementById('versions-modal-overlay').classList.remove('open'); }
 
         async function rollbackVersion(slug, versionId) {
-            if (!confirm('Are you sure you want to restore this revision as active?')) return;
+            if (!confirm('Restore this revision as active?')) return;
             try {
                 const res = await fetch(`/r/${slug}/rollback`, {
                     method: 'POST',
@@ -1221,7 +1026,7 @@
             }
         }
 
-        // ------------------ Settings Modal ------------------
+        // Settings Modal
         function openSettingsModal(slug, hasPasscode, expiresAtIso, allowDownload) {
             document.getElementById('settings-slug-title').innerText = `/r/${slug}`;
             document.getElementById('settings-slug').value = slug;
@@ -1231,12 +1036,9 @@
             document.getElementById('settings-expiry').value = expiresAtIso ? expiresAtIso.slice(0, 16) : '';
             document.getElementById('settings-allow-download').checked = allowDownload;
             document.getElementById('settings-alert').style.display = 'none';
-
             document.getElementById('settings-modal-overlay').classList.add('open');
         }
-        function closeSettingsModal() {
-            document.getElementById('settings-modal-overlay').classList.remove('open');
-        }
+        function closeSettingsModal() { document.getElementById('settings-modal-overlay').classList.remove('open'); }
 
         async function saveSettings(e) {
             e.preventDefault();
@@ -1271,7 +1073,7 @@
             }
         }
 
-        // ------------------ QR Modal ------------------
+        // QR Modal
         function openQRModal(slug) {
             document.getElementById('qr-slug-title').innerText = `/r/${slug}`;
             const img = document.getElementById('qr-img');
@@ -1279,12 +1081,41 @@
             img.src = `/r/${slug}/qr`;
             dl.href = `/r/${slug}/qr`;
             dl.download = `${slug}-qr.png`;
-
             document.getElementById('qr-modal-overlay').classList.add('open');
         }
-        function closeQRModal() {
-            document.getElementById('qr-modal-overlay').classList.remove('open');
-        }
+        function closeQRModal() { document.getElementById('qr-modal-overlay').classList.remove('open'); }
+
+        // Delete Account Flow
+        const btnOpenDeleteAcc = document.getElementById('btn-open-delete-acc');
+        const deleteAccModalOverlay = document.getElementById('delete-acc-modal-overlay');
+        const btnCloseDeleteAcc = document.getElementById('btn-close-delete-acc');
+        const btnCancelDeleteAcc = document.getElementById('btn-cancel-delete-acc');
+        const btnConfirmDeleteAcc = document.getElementById('btn-confirm-delete-acc');
+
+        btnOpenDeleteAcc.addEventListener('click', () => {
+            document.getElementById('delete-acc-alert').style.display = 'none';
+            deleteAccModalOverlay.classList.add('open');
+        });
+        function closeDeleteAccModal() { deleteAccModalOverlay.classList.remove('open'); }
+        btnCloseDeleteAcc.addEventListener('click', closeDeleteAccModal);
+        btnCancelDeleteAcc.addEventListener('click', closeDeleteAccModal);
+
+        btnConfirmDeleteAcc.addEventListener('click', async () => {
+            document.getElementById('delete-acc-alert').style.display = 'none';
+            btnConfirmDeleteAcc.disabled = true;
+
+            try {
+                const res = await fetch('/delete-account', { method: 'POST' });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to delete account.');
+                window.location.href = '/';
+            } catch (err) {
+                const alertBox = document.getElementById('delete-acc-alert');
+                alertBox.innerText = err.message;
+                alertBox.style.display = 'block';
+                btnConfirmDeleteAcc.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>

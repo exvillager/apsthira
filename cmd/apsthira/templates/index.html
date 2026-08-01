@@ -3,295 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apsthira Setup</title>
+    <title>Apsthira — Fluid Resumes, Permanent Links</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #008080; /* Teal desktop background */
+        :root {
+            --bg: #faf8f5;
+            --card-bg: #ffffff;
+            --text: #1c1917;
+            --muted: #78716c;
+            --border: #1c1917;
+            --accent: #d97706;
+            --shadow: 4px 4px 0px #1c1917;
+            --shadow-hover: 6px 6px 0px #1c1917;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Tahoma, Arial, sans-serif;
-            font-size: 13px;
-            color: #000000;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        /* Window Container */
-        .window {
-            background: #c0c0c0;
-            width: 500px;
-            max-width: 95%;
-            border: 1px solid #000000;
-            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080, 1px 1px 0px 0px #000000;
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
         }
 
-        .title-bar {
-            background: linear-gradient(90deg, #000080, #1084d0);
-            color: #ffffff;
-            padding: 3px 4px;
+        /* Top Navbar */
+        header {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto 32px auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: bold;
-            font-size: 12px;
-            margin: 2px 2px 0 2px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border);
         }
 
-        .title-bar-text {
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            background: #f5f2eb;
+            border: 1px solid var(--border);
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-weight: 600;
+        }
+
+        nav {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            padding: 8px 18px;
+            text-decoration: none;
+            box-shadow: var(--shadow);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px #1c1917;
+        }
+
+        .btn-primary {
+            background: #1c1917;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #27272a;
+            color: #ffffff;
+        }
+
+        /* Hero Section */
+        main {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            box-shadow: 6px 6px 0px #1c1917;
+            padding: 40px;
+            margin-bottom: 32px;
+        }
+
+        .hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 38px;
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        .hero-title span {
+            color: var(--accent);
+            text-decoration: underline;
+            text-underline-offset: 6px;
+        }
+
+        .hero-desc {
+            font-size: 16px;
+            color: #44403c;
+            margin-bottom: 32px;
+            max-width: 680px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .feature-box {
+            background: #fdfbf7;
+            border: 1.5px solid var(--border);
+            padding: 16px;
+        }
+
+        .feature-box h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .title-bar-controls {
-            display: flex;
-            gap: 2px;
+        .feature-box p {
+            font-size: 13px;
+            color: var(--muted);
         }
 
-        .title-bar-button {
-            width: 16px;
-            height: 14px;
-            background: #c0c0c0;
-            border: 1px solid #000000;
-            box-shadow: inset 1px 1px 0px 0px #ffffff, inset -1px -1px 0px 0px #808080;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            font-weight: bold;
-            color: #000000;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .title-bar-button:active {
-            box-shadow: inset 1px 1px 0px 0px #808080, inset -1px -1px 0px 0px #ffffff;
-        }
-
-        .menu-bar {
-            display: flex;
-            gap: 12px;
-            padding: 4px 8px;
-            font-size: 12px;
-            border-bottom: 1px solid #808080;
-            margin-bottom: 2px;
-        }
-
-        .menu-bar span {
-            cursor: default;
-        }
-
-        .menu-bar span::first-letter {
-            text-decoration: underline;
-        }
-
-        /* Wizard Content Area */
-        .window-body {
-            padding: 16px;
+        .hero-actions {
             display: flex;
             gap: 16px;
-            flex-grow: 1;
-        }
-
-        .sidebar {
-            width: 130px;
-            background: linear-gradient(180deg, #000080, #808080);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 12px;
-            color: #ffffff;
-            border: 1px solid #808080;
-            box-shadow: inset 1px 1px 0px 0px #000000, inset -1px -1px 0px 0px #ffffff;
-            flex-shrink: 0;
-        }
-
-        .sidebar h2 {
-            font-size: 18px;
-            font-style: italic;
-            font-weight: bold;
-            margin: 0;
-            letter-spacing: 1px;
-            text-shadow: 2px 2px #000000;
-        }
-
-        .sidebar-version {
-            font-size: 10px;
-            text-align: right;
-            opacity: 0.7;
-        }
-
-        .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-width: 0;
-        }
-
-        .wizard-text h3 {
-            font-size: 15px;
-            margin-top: 0;
-            margin-bottom: 12px;
-            font-weight: bold;
-        }
-
-        .wizard-text p {
-            line-height: 1.4;
-            margin-bottom: 16px;
-        }
-
-        .feature-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 16px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .feature-item {
-            display: flex;
             align-items: center;
-            gap: 8px;
         }
 
-        .checkbox-mock {
-            width: 12px;
-            height: 12px;
-            background: #ffffff;
-            border: 1px solid #808080;
-            box-shadow: inset 1px 1px 0px 0px #000000, inset -1px -1px 0px 0px #ffffff;
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        /* Draw checkmark in CSS */
-        .checkbox-mock::after {
-            content: '';
-            position: absolute;
-            left: 3px;
-            top: 1px;
-            width: 4px;
-            height: 7px;
-            border: solid #000000;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-        }
-
-        /* Divider */
-        .window-divider {
-            height: 1px;
-            border-top: 1px solid #808080;
-            border-bottom: 1px solid #ffffff;
-            margin: 12px 0;
-        }
-
-        /* Buttons Row */
-        .actions-row {
+        footer {
+            max-width: 900px;
+            width: 100%;
+            margin: 32px auto 0 auto;
+            padding-top: 16px;
+            border-top: 2px solid var(--border);
             display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-            padding: 0 16px 16px 16px;
-        }
-
-        .btn {
-            background: #c0c0c0;
-            color: #000000;
-            border: 1px solid #000000;
-            box-shadow: inset 1px 1px 0px 0px #ffffff, inset -1px -1px 0px 0px #808080;
-            padding: 4px 16px;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
-            font-family: Tahoma, Arial, sans-serif;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            min-width: 75px;
-            outline: none;
+            color: var(--muted);
         }
 
-        .btn:active {
-            box-shadow: inset 1px 1px 0px 0px #808080, inset -1px -1px 0px 0px #ffffff;
-        }
-        
-        .btn:focus {
-            outline: 1px dotted #000000;
-            outline-offset: -4px;
-        }
-
-        .btn.disabled {
-            color: #808080;
-            cursor: not-allowed;
-            text-shadow: 1px 1px 0px #ffffff;
-        }
-        
-        .btn.disabled:active {
-            box-shadow: inset 1px 1px 0px 0px #ffffff, inset -1px -1px 0px 0px #808080;
+        footer a {
+            color: var(--text);
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="window">
-        <div class="title-bar">
-            <div class="title-bar-text">Apsthira Resume Host Setup</div>
-            <div class="title-bar-controls">
-                <div class="title-bar-button">_</div>
-                <div class="title-bar-button">□</div>
-                <div class="title-bar-button">X</div>
+    <header>
+        <a href="/" class="logo">
+            📄 APSTHIRA <span class="badge">v1.0</span>
+        </a>
+        <nav>
+            <a href="/login" class="btn btn-primary">Login Console →</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="hero-card">
+            <div style="margin-bottom: 12px;">
+                <span class="badge" style="background: #fef3c7; color: #92400e;">✦ FLUID RESUMES • PERMANENT LINKS</span>
             </div>
-        </div>
-        <div class="menu-bar">
-            <span>File</span>
-            <span>Edit</span>
-            <span>View</span>
-            <span>Help</span>
-        </div>
-        <div class="window-body">
-            <div class="sidebar">
-                <h2>Apsthira</h2>
-                <div class="sidebar-version">Version 1.0</div>
-            </div>
-            <div class="main-content">
-                <div class="wizard-text">
-                    <h3>Welcome to the Apsthira Resume Wizard</h3>
-                    <p>This utility installs permanent static links to your CV, backed securely by Cloudflare R2 storage.</p>
-                    
-                    <ul class="feature-list">
-                        <li class="feature-item">
-                            <div class="checkbox-mock"></div>
-                            <span>Fluid resumes, permanent static links</span>
-                        </li>
-                        <li class="feature-item">
-                            <div class="checkbox-mock"></div>
-                            <span>Private bucket storage streaming</span>
-                        </li>
-                        <li class="feature-item">
-                            <div class="checkbox-mock"></div>
-                            <span>Strict server-side PDF validation</span>
-                        </li>
-                        <li class="feature-item">
-                            <div class="checkbox-mock"></div>
-                            <span>Interactive control dashboard</span>
-                        </li>
-                    </ul>
-                    
-                    <p>To begin configuring or updating your links, please click Next to log in, or register a new profile.</p>
+            <h1 class="hero-title">
+                Host your CV securely.<br>Update it anytime, <span>never change your link.</span>
+            </h1>
+            <p class="hero-desc">
+                Apsthira streams your resume directly from private Cloudflare R2 storage behind static short URLs. Keep recruiters up to date without breaking shared links.
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-box">
+                    <h4>🔒 Private R2 Streaming</h4>
+                    <p>Your resume credentials and bucket details stay 100% private and protected.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>📜 Version Control</h4>
+                    <p>Automatic revision backups with 1-click restore capability.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>📊 Visitor Analytics</h4>
+                    <p>Track views, referrer sources, and visitor device breakdowns.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>🔑 Passcode & Expiry</h4>
+                    <p>Optional PIN protection and link expiration timers.</p>
                 </div>
             </div>
+
+            <div class="hero-actions">
+                <a href="/login" class="btn btn-primary" style="font-size: 14px; padding: 10px 24px;">
+                    Open Management Dashboard →
+                </a>
+            </div>
         </div>
-        
-        <div class="window-divider"></div>
-        
-        <div class="actions-row">
-            <a href="#" class="btn disabled">&lt; Back</a>
-            <a href="/login" class="btn" style="font-weight: bold;">Next &gt;</a>
-            <a href="/register" class="btn">Register</a>
-        </div>
-    </div>
+    </main>
+
+    <footer>
+        <div>&copy; 2026 Apsthira. Self-hosted in Go & R2.</div>
+        <div><a href="https://github.com/libsib/apsthira" target="_blank">Source Code</a></div>
+    </footer>
 </body>
 </html>

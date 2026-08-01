@@ -14,136 +14,113 @@
     <meta name="twitter:title" content="{{.OriginalFilename}} - Resume">
     <meta name="twitter:description" content="Fluid up-to-date resume link hosted on Apsthira.">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --bg-color: #008080;
-            --window-bg: #c0c0c0;
-            --text-color: #000000;
-            --viewer-bg: #808080;
-            --title-bg: linear-gradient(90deg, #000080, #1084d0);
+            --bg: #faf8f5;
+            --card-bg: #ffffff;
+            --text: #1c1917;
+            --muted: #78716c;
+            --border: #1c1917;
+            --viewer-bg: #e7e5e4;
+            --shadow: 4px 4px 0px #1c1917;
         }
 
         body.dark-mode {
-            --bg-color: #1a1a2e;
-            --window-bg: #22223b;
-            --text-color: #e0e0e0;
-            --viewer-bg: #0f3460;
-            --title-bg: linear-gradient(90deg, #16213e, #0f3460);
+            --bg: #18181b;
+            --card-bg: #27272a;
+            --text: #f4f4f5;
+            --muted: #a1a1aa;
+            --border: #f4f4f5;
+            --viewer-bg: #09090b;
+            --shadow: 4px 4px 0px #f4f4f5;
         }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 0;
-            font-family: Tahoma, Arial, sans-serif;
-            font-size: 13px;
-            color: var(--text-color);
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 14px;
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: background 0.3s ease;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
-        .window {
-            background: var(--window-bg);
-            border: 1px solid #000000;
-            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080, 1px 1px 0px 0px #000000;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .title-bar {
-            background: var(--title-bg);
-            color: #ffffff;
-            padding: 3px 6px;
+        /* Navbar */
+        header {
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--border);
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: bold;
-            font-size: 12px;
-            margin: 2px 2px 0 2px;
-        }
-
-        .title-bar-controls {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-        }
-
-        .title-bar-button {
-            width: 18px;
-            height: 16px;
-            background: #c0c0c0;
-            border: 1px solid #000000;
-            box-shadow: inset 1px 1px 0px 0px #ffffff, inset -1px -1px 0px 0px #808080;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            font-weight: bold;
-            color: #000000;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .title-bar-button:active {
-            box-shadow: inset 1px 1px 0px 0px #808080, inset -1px -1px 0px 0px #ffffff;
-        }
-
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 8px;
-            font-size: 12px;
-            border-bottom: 1px solid #808080;
-            background: var(--window-bg);
-            gap: 8px;
             flex-wrap: wrap;
+            gap: 12px;
         }
 
-        .toolbar-group {
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 2px 6px;
+            font-weight: 600;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn {
-            background: #c0c0c0;
-            color: #000000;
-            border: 1px solid #000000;
-            box-shadow: inset 1px 1px 0px 0px #ffffff, inset -1px -1px 0px 0px #808080;
-            padding: 2px 8px;
-            font-size: 11px;
-            font-family: Tahoma, Arial, sans-serif;
-            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            padding: 5px 12px;
             text-decoration: none;
+            box-shadow: 2px 2px 0px var(--border);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             outline: none;
-            user-select: none;
         }
 
-        .btn:active {
-            box-shadow: inset 1px 1px 0px 0px #808080, inset -1px -1px 0px 0px #ffffff;
+        .btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0px var(--border);
         }
 
-        .metadata-items {
-            font-size: 11px;
-            color: var(--text-color);
-            display: flex;
-            gap: 12px;
-            align-items: center;
+        .btn-primary {
+            background: var(--text);
+            color: var(--card-bg);
         }
 
         .viewer-container {
             flex-grow: 1;
             background: var(--viewer-bg);
-            padding: 4px;
+            padding: 16px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -152,8 +129,9 @@
         .iframe-border {
             width: 100%;
             height: 100%;
-            border: 1px solid #000000;
-            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080;
+            max-width: 1100px;
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow);
             background: #ffffff;
         }
 
@@ -164,156 +142,139 @@
             background: #ffffff;
         }
 
-        /* Lock / Expired Overlay Screen */
+        /* Lock / Expired Screen */
         .prompt-card {
-            background: #c0c0c0;
-            border: 1px solid #000000;
-            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080, 2px 2px 10px rgba(0,0,0,0.4);
-            padding: 24px;
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow);
+            padding: 32px;
             width: 90%;
-            max-width: 380px;
+            max-width: 400px;
             text-align: center;
-            color: #000000;
         }
 
         .prompt-title {
-            font-weight: bold;
-            font-size: 14px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
             margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
 
         .input-control {
             width: 100%;
-            background: #ffffff;
-            border: 1px solid #808080;
-            box-shadow: inset 1px 1px 0px 0px #000000, inset -1px -1px 0px 0px #ffffff;
-            padding: 6px 8px;
-            box-sizing: border-box;
-            font-size: 13px;
+            background: var(--bg);
+            color: var(--text);
+            border: 2px solid var(--border);
+            padding: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
             outline: none;
-            margin-top: 10px;
-            margin-bottom: 14px;
+            margin: 16px 0;
         }
 
         .alert-error {
-            background: #ffffe0;
-            border: 1px solid #808080;
-            color: #ff0000;
-            padding: 6px;
-            margin-top: 8px;
+            background: #fef2f2;
+            border: 1.5px solid #dc2626;
+            color: #991b1b;
+            padding: 8px;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
             display: none;
+            margin-bottom: 12px;
         }
 
-        /* QR Code Modal */
+        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(28, 25, 23, 0.5);
+            backdrop-filter: blur(2px);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 500;
         }
-
         .modal-overlay.open { display: flex; }
 
         .modal {
-            background: #c0c0c0;
-            border: 1px solid #000000;
-            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080, 2px 2px 10px rgba(0,0,0,0.5);
-            width: 100%;
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow);
+            width: 90%;
             max-width: 320px;
+            padding: 20px;
+            text-align: center;
         }
-
-        .modal-body { padding: 16px; text-align: center; }
     </style>
 </head>
 <body>
-    <div class="window">
-        <div class="title-bar">
-            <div class="title-bar-text">📄 {{.Slug}} - Apsthira PDF Viewer</div>
-            <div class="title-bar-controls">
-                <button type="button" class="title-bar-button" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌙</button>
-            </div>
+    <header>
+        <div class="logo">
+            📄 APSTHIRA <span class="badge">/r/{{.Slug}}</span>
+            <span style="font-size: 12px; font-weight: normal; color: var(--muted); margin-left: 8px;" class="desktop-only">
+                Source: <strong>{{.OriginalFilename}}</strong>
+            </span>
         </div>
 
-        {{if .IsExpired}}
-        <!-- Link Expired View -->
-        <div class="viewer-container">
-            <div class="prompt-card">
-                <div class="prompt-title" style="color: #c00000;">⚠️ Link Expired</div>
-                <p style="margin: 12px 0; line-height: 1.4;">
-                    This resume link (<strong>/r/{{.Slug}}</strong>) has expired and is no longer publicly accessible.
-                </p>
-                <p style="font-size: 11px; color: #555;">
-                    If you are the resume owner, you can extend or remove the expiration date from your Apsthira dashboard.
-                </p>
-            </div>
+        <div class="actions">
+            <button type="button" class="btn" onclick="toggleTheme()">🌙 Theme</button>
+            <button type="button" class="btn" onclick="openShareModal()">📱 Share / QR</button>
+            <button type="button" class="btn" onclick="printPDF()">🖨️ Print</button>
+            {{if .AllowDownload}}
+            <a href="/r/{{.Slug}}/raw?dl=1" class="btn btn-primary" target="_blank">💾 Download PDF</a>
+            {{end}}
         </div>
+    </header>
 
-        {{else if .IsProtected}}
-        <!-- Passcode Protection Screen -->
-        <div class="viewer-container">
-            <div class="prompt-card">
-                <div class="prompt-title">🔒 Passcode Protected</div>
-                <p style="margin-bottom: 8px; line-height: 1.4;">
-                    This resume is password protected by the owner. Please enter the passcode to view.
-                </p>
-
-                <div id="unlock-alert" class="alert-error"></div>
-
-                <form id="unlock-form" onsubmit="submitUnlock(event)">
-                    <input type="password" id="unlock-passcode" class="input-control" placeholder="Enter passcode" required autofocus>
-                    <button type="submit" class="btn" style="width: 100%; font-weight: bold; padding: 6px;">
-                        Unlock Document
-                    </button>
-                </form>
-            </div>
+    {{if .IsExpired}}
+    <div class="viewer-container">
+        <div class="prompt-card">
+            <div class="prompt-title" style="color: #dc2626;">⚠️ Link Expired</div>
+            <p style="color: var(--muted); margin-bottom: 12px;">
+                This resume link (<strong>/r/{{.Slug}}</strong>) has expired and is no longer available.
+            </p>
+            <p style="font-family: 'JetBrains Mono', monospace; font-size: 11px;">
+                If you are the owner, you can extend or remove expiration from your dashboard.
+            </p>
         </div>
-
-        {{else}}
-        <!-- Normal PDF Viewer -->
-        <div class="toolbar">
-            <div class="toolbar-group">
-                <button type="button" class="btn" onclick="openShareModal()">📱 Share / QR Code</button>
-                <button type="button" class="btn" onclick="printPDF()">🖨️ Print</button>
-                {{if .AllowDownload}}
-                <a href="/r/{{.Slug}}/raw?dl=1" class="btn" target="_blank">💾 Download PDF</a>
-                {{end}}
-            </div>
-
-            <div class="metadata-items">
-                <span>Source: <strong>{{.OriginalFilename}}</strong></span>
-            </div>
-        </div>
-
-        <div class="viewer-container">
-            <div class="iframe-border">
-                <iframe src="/r/{{.Slug}}/raw" id="pdf-viewer"></iframe>
-            </div>
-        </div>
-        {{end}}
     </div>
 
-    <!-- Share & QR Modal -->
+    {{else if .IsProtected}}
+    <div class="viewer-container">
+        <div class="prompt-card">
+            <div class="prompt-title">🔒 Passcode Protected</div>
+            <p style="color: var(--muted); font-size: 13px;">
+                This resume is passcode protected by the owner. Enter passcode to unlock:
+            </p>
+
+            <div id="unlock-alert" class="alert-error"></div>
+
+            <form id="unlock-form" onsubmit="submitUnlock(event)">
+                <input type="password" id="unlock-passcode" class="input-control" placeholder="Enter passcode" required autofocus>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">
+                    Unlock Document →
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {{else}}
+    <div class="viewer-container">
+        <div class="iframe-border">
+            <iframe src="/r/{{.Slug}}/raw" id="pdf-viewer"></iframe>
+        </div>
+    </div>
+    {{end}}
+
+    <!-- Share Modal -->
     <div class="modal-overlay" id="share-modal-overlay">
         <div class="modal">
-            <div class="title-bar">
-                <div class="title-bar-text">Share & QR Code</div>
-                <button type="button" class="title-bar-button" onclick="closeShareModal()">X</button>
-            </div>
-            <div class="modal-body">
-                <p style="margin-top: 0; font-size: 11px; font-weight: bold;">Scan to view resume on mobile:</p>
-                <img src="/r/{{.Slug}}/qr" alt="QR Code" style="width: 180px; height: 180px; border: 1px solid #808080; background: #fff; padding: 6px;">
-                <div style="margin-top: 12px; display: flex; gap: 6px; justify-content: center;">
-                    <a href="/r/{{.Slug}}/qr" download="{{.Slug}}-qr.png" class="btn">Download QR Code</a>
-                    <button type="button" class="btn" onclick="copyLink()">Copy URL</button>
-                </div>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 12px;">Share & QR Code</h3>
+            <img src="/r/{{.Slug}}/qr" alt="QR Code" style="width: 180px; height: 180px; border: 2px solid var(--border); background: #fff; padding: 6px; margin-bottom: 16px;">
+            <div style="display: flex; gap: 8px; justify-content: center;">
+                <a href="/r/{{.Slug}}/qr" download="{{.Slug}}-qr.png" class="btn btn-primary">Download QR</a>
+                <button type="button" class="btn" onclick="copyLink()">Copy URL</button>
+                <button type="button" class="btn" onclick="closeShareModal()">Close</button>
             </div>
         </div>
     </div>
@@ -328,16 +289,11 @@
             document.body.classList.add('dark-mode');
         }
 
-        function openShareModal() {
-            document.getElementById('share-modal-overlay').classList.add('open');
-        }
-        function closeShareModal() {
-            document.getElementById('share-modal-overlay').classList.remove('open');
-        }
+        function openShareModal() { document.getElementById('share-modal-overlay').classList.add('open'); }
+        function closeShareModal() { document.getElementById('share-modal-overlay').classList.remove('open'); }
 
         function copyLink() {
-            const url = window.location.href;
-            navigator.clipboard.writeText(url).then(() => {
+            navigator.clipboard.writeText(window.location.href).then(() => {
                 alert('Resume link copied to clipboard!');
             });
         }
@@ -379,7 +335,6 @@
         {{end}}
 
         {{if not .IsProtected}}{{if not .IsExpired}}
-        // Register view analytics count
         window.addEventListener('load', () => {
             fetch('/r/{{.Slug}}/view', { method: 'POST' }).catch(() => {});
         });
