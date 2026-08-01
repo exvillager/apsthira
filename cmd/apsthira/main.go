@@ -18,6 +18,7 @@ import (
 	"apsthira/internal/db"
 	"apsthira/internal/handler"
 	"apsthira/internal/logger"
+	"apsthira/internal/metrics"
 	"apsthira/internal/middleware"
 	"apsthira/internal/storage"
 )
@@ -150,6 +151,7 @@ func main() {
 	}
 
 	r.Use(middleware.RequestLogger())
+	r.Use(metrics.Middleware())
 	r.Use(middleware.RateLimit(middleware.NewIPRateLimiter(rate.Limit(15), 30)))
 
 	r.GET("/", h.LoadUser, h.HandleIndex)
@@ -169,6 +171,8 @@ func main() {
 	r.GET("/r/:slug", h.HandleViewResume)
 	r.GET("/r/:slug/raw", h.HandleStreamResume)
 	r.POST("/r/:slug/view", h.HandleIncrementViewCount)
+
+	r.GET("/metrics", metrics.Handler())
 
 	slog.Info("server listening", "url", "http://127.0.0.1:"+port)
 	if err := r.Run("127.0.0.1:" + port); err != nil {
