@@ -1,25 +1,10 @@
-# Stage 1: Build binary
-FROM golang:alpine AS builder
+FROM debian:bookworm-slim
 
-RUN apk add --no-cache gcc musl-dev git
-
-WORKDIR /app
-
-COPY go.mod go.sum ./
-RUN go mod download
-
-COPY . .
-
-RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-w -s" -o apsthira ./cmd/apsthira
-
-# Stage 2: Runtime image
-FROM alpine:latest
-
-RUN apk add --no-cache ca-certificates tzdata sqlite
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates tzdata sqlite3 && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY --from=builder /app/apsthira /app/apsthira
+COPY apsthira /app/apsthira
 
 EXPOSE 8080
 
