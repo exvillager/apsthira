@@ -9,14 +9,35 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
+            --bg: #121214;
+            --card-bg: #1c1c20;
+            --panel-bg: #1c1c20;
+            --text: #f4f4f5;
+            --muted: #a1a1aa;
+            --border: #3f3f46;
+            --accent: #fbbf24;
+            --shadow: 4px 4px 0px #000000;
+            --shadow-hover: 6px 6px 0px #000000;
+            --table-header-bg: #27272a;
+            --table-hover-bg: #27272a;
+            --input-bg: #121214;
+            --modal-header-bg: #27272a;
+        }
+
+        html.light-mode {
             --bg: #faf8f5;
             --card-bg: #ffffff;
+            --panel-bg: #ffffff;
             --text: #1c1917;
             --muted: #78716c;
             --border: #1c1917;
             --accent: #d97706;
             --shadow: 4px 4px 0px #1c1917;
             --shadow-hover: 6px 6px 0px #1c1917;
+            --table-header-bg: #f5f2eb;
+            --table-hover-bg: #faf8f5;
+            --input-bg: #ffffff;
+            --modal-header-bg: #f5f2eb;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,6 +51,7 @@
             display: flex;
             flex-direction: column;
             padding: 24px 36px;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
         /* Top Header */
@@ -59,10 +81,11 @@
         .badge {
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
-            background: #f5f2eb;
+            background: var(--card-bg);
             border: 1px solid var(--border);
             padding: 3px 8px;
             font-weight: 600;
+            color: var(--text);
         }
 
         .user-nav {
@@ -80,7 +103,7 @@
             border: 2px solid var(--border);
             padding: 6px 14px;
             text-decoration: none;
-            box-shadow: 3px 3px 0px #1c1917;
+            box-shadow: var(--shadow);
             transition: transform 0.15s ease, box-shadow 0.15s ease;
             cursor: pointer;
             display: inline-flex;
@@ -91,36 +114,36 @@
 
         .btn:hover {
             transform: translate(-2px, -2px);
-            box-shadow: 5px 5px 0px #1c1917;
+            box-shadow: var(--shadow-hover);
         }
 
         .btn:active {
             transform: translate(1px, 1px);
-            box-shadow: 1px 1px 0px #1c1917;
+            box-shadow: 1px 1px 0px #000000;
         }
 
         .btn-primary {
-            background: #1c1917;
-            color: #ffffff;
+            background: var(--text);
+            color: var(--bg);
         }
 
         .btn-primary:hover {
-            background: #27272a;
-            color: #ffffff;
+            background: var(--accent);
+            color: #000000;
         }
 
         .btn-danger {
-            background: #fef2f2;
-            color: #991b1b;
-            border-color: #dc2626;
-            box-shadow: 3px 3px 0px #dc2626;
+            background: rgba(220, 38, 38, 0.15);
+            color: #fca5a5;
+            border-color: #ef4444;
+            box-shadow: 3px 3px 0px #ef4444;
         }
 
         .btn-danger:hover {
-            box-shadow: 5px 5px 0px #dc2626;
+            box-shadow: 5px 5px 0px #ef4444;
         }
 
-        /* Top Metric Strip */
+        /* Metric Strip */
         .metrics-strip {
             max-width: 1520px;
             width: 100%;
@@ -137,7 +160,7 @@
         .metric-card {
             background: var(--card-bg);
             border: 2px solid var(--border);
-            box-shadow: 3px 3px 0px #1c1917;
+            box-shadow: var(--shadow);
             padding: 14px 18px;
             display: flex;
             justify-content: space-between;
@@ -175,7 +198,7 @@
         }
 
         .panel {
-            background: var(--card-bg);
+            background: var(--panel-bg);
             border: 2px solid var(--border);
             box-shadow: var(--shadow);
             padding: 28px;
@@ -210,7 +233,7 @@
             display: flex;
             align-items: center;
             border: 2px solid var(--border);
-            background: #ffffff;
+            background: var(--input-bg);
         }
 
         .input-wrapper span.prefix {
@@ -234,22 +257,20 @@
 
         .form-control.bordered {
             border: 2px solid var(--border);
-            background: #ffffff;
+            background: var(--input-bg);
         }
-
-        .form-control:focus { background: #fffdfa; }
 
         /* Dropzone */
         .dropzone {
             border: 2px dashed var(--border);
-            background: #faf8f5;
+            background: var(--bg);
             padding: 32px 16px;
             text-align: center;
             cursor: pointer;
             transition: background 0.15s ease;
         }
 
-        .dropzone:hover { background: #f2eee5; }
+        .dropzone:hover { opacity: 0.9; }
 
         .dropzone .main-text {
             font-family: 'Space Grotesk', sans-serif;
@@ -269,7 +290,7 @@
             display: none;
             align-items: center;
             justify-content: space-between;
-            background: #fef3c7;
+            background: rgba(251, 191, 36, 0.15);
             border: 2px solid var(--border);
             padding: 10px 14px;
             margin-top: 8px;
@@ -280,7 +301,7 @@
         .file-info button {
             background: none;
             border: none;
-            color: #dc2626;
+            color: #ef4444;
             font-weight: bold;
             cursor: pointer;
             font-size: 16px;
@@ -290,7 +311,7 @@
         .table-container {
             overflow-x: auto;
             border: 2px solid var(--border);
-            background: #ffffff;
+            background: var(--panel-bg);
             flex-grow: 1;
         }
 
@@ -305,7 +326,7 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
             text-transform: uppercase;
-            background: #f5f2eb;
+            background: var(--table-header-bg);
             border-bottom: 2px solid var(--border);
             padding: 12px 16px;
             font-weight: 700;
@@ -313,16 +334,16 @@
 
         td {
             padding: 14px 16px;
-            border-bottom: 1px solid #e7e5e4;
+            border-bottom: 1px solid var(--border);
             vertical-align: middle;
         }
 
-        tr:hover td { background: #faf8f5; }
+        tr:hover td { background: var(--table-hover-bg); }
 
         td a.link-url {
             font-family: 'JetBrains Mono', monospace;
             font-weight: 600;
-            color: #2563eb;
+            color: var(--accent);
             text-decoration: underline;
         }
 
@@ -335,17 +356,17 @@
         .btn-sm {
             padding: 4px 10px;
             font-size: 11px;
-            box-shadow: 2px 2px 0px #1c1917;
+            box-shadow: 2px 2px 0px #000000;
         }
 
-        .btn-sm:hover { box-shadow: 3px 3px 0px #1c1917; }
+        .btn-sm:hover { box-shadow: 3px 3px 0px #000000; }
 
         /* Alert */
         .alert {
             display: none;
-            background: #fef2f2;
-            border: 2px solid #dc2626;
-            color: #991b1b;
+            background: rgba(220, 38, 38, 0.15);
+            border: 2px solid #ef4444;
+            color: #fca5a5;
             padding: 10px 14px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
@@ -357,12 +378,12 @@
             position: fixed;
             bottom: 24px;
             right: 24px;
-            background: #1c1917;
-            color: #ffffff;
+            background: var(--text);
+            color: var(--bg);
             font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
             padding: 12px 20px;
-            box-shadow: 4px 4px 0px #d97706;
+            box-shadow: 4px 4px 0px var(--accent);
             display: none;
             z-index: 1000;
         }
@@ -371,7 +392,7 @@
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(28, 25, 23, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(2px);
             display: none;
             justify-content: center;
@@ -382,15 +403,15 @@
         .modal-overlay.open { display: flex; }
 
         .modal {
-            background: #ffffff;
+            background: var(--card-bg);
             border: 2px solid var(--border);
-            box-shadow: 8px 8px 0px #1c1917;
+            box-shadow: 8px 8px 0px #000000;
             width: 90%;
             max-width: 520px;
         }
 
         .modal-header {
-            background: #f5f2eb;
+            background: var(--modal-header-bg);
             border-bottom: 2px solid var(--border);
             padding: 14px 18px;
             display: flex;
@@ -404,6 +425,7 @@
         .modal-close {
             background: none;
             border: none;
+            color: var(--text);
             font-family: 'JetBrains Mono', monospace;
             font-weight: 700;
             font-size: 18px;
@@ -427,6 +449,12 @@
 
         footer a { color: var(--text); text-decoration: underline; }
     </style>
+    <script>
+        const savedTheme = localStorage.getItem('apsthira_theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.documentElement.classList.add('light-mode');
+        }
+    </script>
 </head>
 <body>
     <header>
@@ -434,7 +462,8 @@
             📄 APSTHIRA <span class="badge">CONSOLE</span>
         </a>
         <div class="user-nav">
-            <span class="badge" style="background: #e0f2fe; color: #0369a1;">● OWNER: {{.Username}}</span>
+            <button type="button" class="btn btn-sm" id="theme-btn" onclick="toggleTheme()">🌙 Dark</button>
+            <span class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-color: #38bdf8;">● OWNER: {{.Username}}</span>
             <button type="button" class="btn btn-danger btn-sm" id="btn-open-delete-acc">Delete Account</button>
             <form action="/logout" method="POST" style="margin: 0; display: inline;">
                 <button type="submit" class="btn btn-sm">Logout →</button>
@@ -516,7 +545,7 @@
         <div class="panel">
             <div class="panel-header">
                 <span>ACTIVE RESUME LINKS</span>
-                <span class="badge" style="background: #fef3c7; color: #92400e;">LIVE SHORT URLS</span>
+                <span class="badge" style="background: rgba(251, 191, 36, 0.15); color: var(--accent); border-color: var(--accent);">LIVE SHORT URLS</span>
             </div>
 
             <div id="list-alert" class="alert"></div>
@@ -580,26 +609,26 @@
             </div>
             <div class="modal-body">
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
-                    <div style="background: #faf8f5; border: 1.5px solid var(--border); padding: 12px; text-align: center;">
+                    <div style="background: var(--bg); border: 1.5px solid var(--border); padding: 12px; text-align: center;">
                         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted);">TOTAL VIEWS</div>
                         <div id="stats-total-views" style="font-family: 'JetBrains Mono', monospace; font-weight: bold; font-size: 22px;">0</div>
                     </div>
-                    <div style="background: #faf8f5; border: 1.5px solid var(--border); padding: 12px; text-align: center;">
+                    <div style="background: var(--bg); border: 1.5px solid var(--border); padding: 12px; text-align: center;">
                         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted);">TOP SOURCE</div>
                         <div id="stats-top-referrer" style="font-weight: bold; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</div>
                     </div>
-                    <div style="background: #faf8f5; border: 1.5px solid var(--border); padding: 12px; text-align: center;">
+                    <div style="background: var(--bg); border: 1.5px solid var(--border); padding: 12px; text-align: center;">
                         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted);">MAIN DEVICE</div>
                         <div id="stats-top-device" style="font-weight: bold; font-size: 12px;">DESKTOP</div>
                     </div>
                 </div>
 
-                <div style="background: #faf8f5; border: 1.5px solid var(--border); padding: 14px; margin-bottom: 16px;">
+                <div style="background: var(--bg); border: 1.5px solid var(--border); padding: 14px; margin-bottom: 16px;">
                     <div style="font-family: 'JetBrains Mono', monospace; font-weight: 700; margin-bottom: 10px; font-size: 11px;">DAILY VIEWS (LAST 14 DAYS):</div>
                     <div id="daily-chart-container" style="display: flex; align-items: flex-end; gap: 6px; height: 90px; border-bottom: 1.5px solid var(--border); padding-bottom: 4px;"></div>
                 </div>
 
-                <div style="background: #faf8f5; border: 1.5px solid var(--border); padding: 14px;">
+                <div style="background: var(--bg); border: 1.5px solid var(--border); padding: 14px;">
                     <div style="font-family: 'JetBrains Mono', monospace; font-weight: 700; margin-bottom: 8px; font-size: 11px;">TRAFFIC SOURCES:</div>
                     <table style="width: 100%; border-collapse: collapse; font-size: 12px;" id="referrers-table">
                         <tbody></tbody>
@@ -622,10 +651,10 @@
             </div>
             <div class="modal-body">
                 <p style="font-size: 12px; color: var(--muted); margin-bottom: 12px;">Stored historical revisions (Max 3 retained). You can restore any past revision as active.</p>
-                <div style="max-height: 260px; overflow-y: auto; border: 1.5px solid var(--border); background: #fff; margin-bottom: 16px;">
+                <div style="max-height: 260px; overflow-y: auto; border: 1.5px solid var(--border); background: var(--bg); margin-bottom: 16px;">
                     <table style="width: 100%; border-collapse: collapse; font-size: 12px;" id="versions-table">
                         <thead>
-                            <tr style="background: #f5f2eb; border-bottom: 1.5px solid var(--border);">
+                            <tr style="background: var(--modal-header-bg); border-bottom: 1.5px solid var(--border);">
                                 <th style="padding: 6px; text-align: left;">Ver</th>
                                 <th style="padding: 6px; text-align: left;">Filename</th>
                                 <th style="padding: 6px; text-align: left;">Uploaded</th>
@@ -744,7 +773,7 @@
     <!-- Delete Account Modal -->
     <div class="modal-overlay" id="delete-acc-modal-overlay">
         <div class="modal" style="max-width: 420px;">
-            <div class="modal-header" style="background: #fef2f2; color: #991b1b;">
+            <div class="modal-header" style="background: rgba(220, 38, 38, 0.15); color: #fca5a5;">
                 <span>⚠️ DELETE ACCOUNT</span>
                 <button type="button" class="modal-close" id="btn-close-delete-acc">✕</button>
             </div>
@@ -752,7 +781,7 @@
                 <div id="delete-acc-alert" class="alert"></div>
 
                 <div style="margin-bottom: 20px; line-height: 1.5; font-size: 13px;">
-                    <p style="font-weight: bold; color: #dc2626;">This action is permanent and cannot be undone.</p>
+                    <p style="font-weight: bold; color: #ef4444;">This action is permanent and cannot be undone.</p>
                     <p style="margin-top: 8px;">Deleting your account will erase user credentials, all resume links, analytics, and uploaded R2 files.</p>
                 </div>
 
@@ -772,6 +801,19 @@
         const protocol = window.location.protocol;
         const host = window.location.host;
         document.getElementById('slug-prefix').innerText = `${host}/r/`;
+
+        function updateThemeBtn() {
+            const btn = document.getElementById('theme-btn');
+            const isLight = document.documentElement.classList.contains('light-mode');
+            btn.innerText = isLight ? '☀️ Light' : '🌙 Dark';
+        }
+        function toggleTheme() {
+            document.documentElement.classList.toggle('light-mode');
+            const isLight = document.documentElement.classList.contains('light-mode');
+            localStorage.setItem('apsthira_theme', isLight ? 'light' : 'dark');
+            updateThemeBtn();
+        }
+        updateThemeBtn();
 
         // Upload Form files
         const dropzoneUpload = document.getElementById('dropzone-upload');
@@ -810,10 +852,10 @@
         // Setup dropzones
         function setupDropzone(dropzone, fileInput, fileInfo, fileName, onSelect) {
             ['dragenter', 'dragover'].forEach(name => {
-                dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.style.background = '#f2eee5'; });
+                dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.style.opacity = '0.7'; });
             });
             ['dragleave', 'drop'].forEach(name => {
-                dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.style.background = '#faf8f5'; });
+                dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.style.opacity = '1'; });
             });
             dropzone.addEventListener('drop', (e) => {
                 const files = e.dataTransfer.files;
@@ -1018,7 +1060,7 @@
                         const col = document.createElement('div');
                         col.style.flex = '1';
                         col.style.height = `${pct}%`;
-                        col.style.background = '#1c1917';
+                        col.style.background = 'var(--text)';
                         col.title = `${d.date}: ${d.count} views`;
                         chartContainer.appendChild(col);
                     });
@@ -1026,7 +1068,7 @@
 
                 if (data.top_referrers && data.top_referrers.length > 0) {
                     refTableBody.innerHTML = data.top_referrers.map(r => `
-                        <tr style="border-bottom: 1px solid #e7e5e4;">
+                        <tr style="border-bottom: 1px solid var(--border);">
                             <td style="padding: 6px;">${r.referrer}</td>
                             <td style="padding: 6px; font-weight: bold; text-align: right; font-family: 'JetBrains Mono', monospace;">${r.count}</td>
                         </tr>
@@ -1058,13 +1100,13 @@
                 }
 
                 tbody.innerHTML = versions.map((v, idx) => `
-                    <tr style="border-bottom: 1px solid #e7e5e4;">
+                    <tr style="border-bottom: 1px solid var(--border);">
                         <td style="padding: 6px; font-weight: bold; font-family: 'JetBrains Mono', monospace;">v${v.version_num}</td>
                         <td style="padding: 6px;">${v.original_filename}</td>
                         <td style="padding: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px;">${new Date(v.created_at).toLocaleDateString()}</td>
                         <td style="padding: 6px; text-align: center;">
                             <a href="/r/${slug}/raw?v=${v.id}&dl=1" target="_blank" class="btn btn-sm" style="padding: 2px 6px;">DL</a>
-                            ${idx === 0 ? '<span style="color: #059669; font-weight: bold; margin-left: 4px; font-family: monospace;">[Active]</span>' : `<button type="button" class="btn btn-sm" style="padding: 2px 6px;" onclick="rollbackVersion('${slug}', ${v.id})">Restore</button>`}
+                            ${idx === 0 ? '<span style="color: #34d399; font-weight: bold; margin-left: 4px; font-family: monospace;">[Active]</span>' : `<button type="button" class="btn btn-sm" style="padding: 2px 6px;" onclick="rollbackVersion('${slug}', ${v.id})">Restore</button>`}
                         </td>
                     </tr>
                 `).join('');

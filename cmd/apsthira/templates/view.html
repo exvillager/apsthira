@@ -20,23 +20,25 @@
 
     <style>
         :root {
+            --bg: #121214;
+            --card-bg: #1c1c20;
+            --text: #f4f4f5;
+            --muted: #a1a1aa;
+            --border: #f4f4f5;
+            --accent: #fbbf24;
+            --viewer-bg: #09090b;
+            --shadow: 4px 4px 0px #000000;
+        }
+
+        html.light-mode {
             --bg: #faf8f5;
             --card-bg: #ffffff;
             --text: #1c1917;
             --muted: #78716c;
             --border: #1c1917;
+            --accent: #d97706;
             --viewer-bg: #e7e5e4;
             --shadow: 4px 4px 0px #1c1917;
-        }
-
-        body.dark-mode {
-            --bg: #18181b;
-            --card-bg: #27272a;
-            --text: #f4f4f5;
-            --muted: #a1a1aa;
-            --border: #f4f4f5;
-            --viewer-bg: #09090b;
-            --shadow: 4px 4px 0px #f4f4f5;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -81,6 +83,7 @@
             border: 1px solid var(--border);
             padding: 2px 6px;
             font-weight: 600;
+            color: var(--text);
         }
 
         .actions {
@@ -114,7 +117,7 @@
 
         .btn-primary {
             background: var(--text);
-            color: var(--card-bg);
+            color: var(--bg);
         }
 
         .viewer-container {
@@ -173,9 +176,9 @@
         }
 
         .alert-error {
-            background: #fef2f2;
-            border: 1.5px solid #dc2626;
-            color: #991b1b;
+            background: rgba(220, 38, 38, 0.15);
+            border: 1.5px solid #ef4444;
+            color: #fca5a5;
             padding: 8px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
@@ -187,7 +190,7 @@
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(28, 25, 23, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(2px);
             display: none;
             justify-content: center;
@@ -206,6 +209,12 @@
             text-align: center;
         }
     </style>
+    <script>
+        const savedTheme = localStorage.getItem('apsthira_theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.documentElement.classList.add('light-mode');
+        }
+    </script>
 </head>
 <body>
     <header>
@@ -217,7 +226,7 @@
         </div>
 
         <div class="actions">
-            <button type="button" class="btn" onclick="toggleTheme()">🌙 Theme</button>
+            <button type="button" class="btn" onclick="toggleTheme()" id="theme-btn">🌙 Dark</button>
             <button type="button" class="btn" onclick="openShareModal()">📱 Share / QR</button>
             <button type="button" class="btn" onclick="printPDF()">🖨️ Print</button>
             {{if .AllowDownload}}
@@ -229,7 +238,7 @@
     {{if .IsExpired}}
     <div class="viewer-container">
         <div class="prompt-card">
-            <div class="prompt-title" style="color: #dc2626;">⚠️ Link Expired</div>
+            <div class="prompt-title" style="color: #ef4444;">⚠️ Link Expired</div>
             <p style="color: var(--muted); margin-bottom: 12px;">
                 This resume link (<strong>/r/{{.Slug}}</strong>) has expired and is no longer available.
             </p>
@@ -280,14 +289,18 @@
     </div>
 
     <script>
+        function updateThemeBtn() {
+            const btn = document.getElementById('theme-btn');
+            const isLight = document.documentElement.classList.contains('light-mode');
+            btn.innerText = isLight ? '☀️ Light' : '🌙 Dark';
+        }
         function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('apsthira_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+            document.documentElement.classList.toggle('light-mode');
+            const isLight = document.documentElement.classList.contains('light-mode');
+            localStorage.setItem('apsthira_theme', isLight ? 'light' : 'dark');
+            updateThemeBtn();
         }
-
-        if (localStorage.getItem('apsthira_theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
+        updateThemeBtn();
 
         function openShareModal() { document.getElementById('share-modal-overlay').classList.add('open'); }
         function closeShareModal() { document.getElementById('share-modal-overlay').classList.remove('open'); }
