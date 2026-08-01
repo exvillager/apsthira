@@ -25,6 +25,12 @@ func (sr *statusRecorder) WriteHeader(code int) {
 
 func RequestLogger() nanoserve.HandlerFunction {
 	return func(c *nanoserve.Context) error {
+		// Health checks get polled frequently and add little value as logs —
+		// skip them so they don't drown out real request activity.
+		if c.Request.URL.Path == "/health" {
+			return c.Next()
+		}
+
 		start := time.Now()
 
 		ip, err := c.IP()

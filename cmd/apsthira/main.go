@@ -27,8 +27,8 @@ import (
 var templatesFS embed.FS
 
 func main() {
-	logger.Init()
 	_ = godotenv.Load()
+	logger.Init(config.GetEnv("LOG_PATH", "logs/apsthira.log"))
 
 	// Check if sync command is requested
 	if len(os.Args) > 1 && (os.Args[1] == "--sync" || os.Args[1] == "--sync-push" || os.Args[1] == "--sync-pull") {
@@ -153,6 +153,8 @@ func main() {
 	r.Use(middleware.RequestLogger())
 	r.Use(metrics.Middleware())
 	r.Use(middleware.RateLimit(middleware.NewIPRateLimiter(rate.Limit(15), 30)))
+
+	r.GET("/health", h.HandleHealth)
 
 	r.GET("/", h.LoadUser, h.HandleIndex)
 

@@ -164,6 +164,10 @@ func (db *DB) Driver() string {
 	return db.driver
 }
 
+func (db *DB) Ping() error {
+	return db.conn.Ping()
+}
+
 // q replaces placeholder '?' with '$1, $2...' for PostgreSQL
 func (db *DB) q(query string) string {
 	if db.driver == "postgres" {
