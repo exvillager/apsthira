@@ -1,0 +1,14 @@
+services:
+  apsthira:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: apsthira
+    restart: always
+    ports:
+      - "127.0.0.1:8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - ./resumes.db:/app/resumes.db
+      - ./logs:/app/logs

@@ -6,6 +6,9 @@
 *.db-journal
 *.db-wal
 
+# Application log files
+/logs/
+
 # Compiled Binaries (Go)
 /apsthira
 /resume-link

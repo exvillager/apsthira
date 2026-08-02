@@ -4,104 +4,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Slug}} - Resume | Apsthira</title>
+
+    <!-- OpenGraph & Social Cards -->
+    <meta property="og:title" content="{{.OriginalFilename}} - Resume">
+    <meta property="og:description" content="Fluid up-to-date resume link hosted on Apsthira.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{.PublicURL}}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{.OriginalFilename}} - Resume">
+    <meta name="twitter:description" content="Fluid up-to-date resume link hosted on Apsthira.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --bg: #121214;
+            --card-bg: #1c1c20;
+            --text: #f4f4f5;
+            --muted: #a1a1aa;
+            --border: #f4f4f5;
+            --accent: #fbbf24;
+            --viewer-bg: #09090b;
+            --shadow: 4px 4px 0px #000000;
+        }
+
+        html.light-mode {
+            --bg: #faf8f5;
+            --card-bg: #ffffff;
+            --text: #1c1917;
+            --muted: #78716c;
+            --border: #1c1917;
+            --accent: #d97706;
+            --viewer-bg: #e7e5e4;
+            --shadow: 4px 4px 0px #1c1917;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background-color: #008080;
-            margin: 0;
-            padding: 0;
-            font-family: Tahoma, Arial, sans-serif;
-            font-size: 13px;
-            color: #000000;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 14px;
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
-        .window {
-            background: #c0c0c0;
-            border: 1px solid #000000;
-            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080, 1px 1px 0px 0px #000000;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .title-bar {
-            background: linear-gradient(90deg, #000080, #1084d0);
-            color: #ffffff;
-            padding: 3px 4px;
+        /* Navbar */
+        header {
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--border);
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: bold;
-            font-size: 12px;
-            margin: 2px 2px 0 2px;
-        }
-
-        .title-bar-controls {
-            display: flex;
-            gap: 2px;
-        }
-
-        .title-bar-button {
-            width: 16px;
-            height: 14px;
-            background: #c0c0c0;
-            border: 1px solid #000000;
-            box-shadow: inset 1px 1px 0px 0px #ffffff, inset -1px -1px 0px 0px #808080;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            font-weight: bold;
-            color: #000000;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .menu-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 8px;
-            font-size: 12px;
-            border-bottom: 1px solid #808080;
-            background: #c0c0c0;
-        }
-
-        .menu-items {
-            display: flex;
+            flex-wrap: wrap;
             gap: 12px;
         }
 
-        .menu-items span {
-            color: #000000;
-            cursor: default;
-        }
-
-        .menu-items span::first-letter {
-            text-decoration: underline;
-        }
-
-        .metadata-items {
-            font-size: 11px;
-            color: #555555;
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
             display: flex;
-            gap: 16px;
+            align-items: center;
+            gap: 8px;
         }
 
-        .metadata-items span {
-            border-left: 1px solid #808080;
-            border-right: 1px solid #ffffff;
-            padding: 0 8px;
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 2px 6px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            padding: 5px 12px;
+            text-decoration: none;
+            box-shadow: 2px 2px 0px var(--border);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            outline: none;
+        }
+
+        .btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0px var(--border);
+        }
+
+        .btn-primary {
+            background: var(--text);
+            color: var(--bg);
         }
 
         .viewer-container {
             flex-grow: 1;
-            background: #808080;
-            padding: 4px;
+            background: var(--viewer-bg);
+            padding: 16px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -110,8 +132,9 @@
         .iframe-border {
             width: 100%;
             height: 100%;
-            border: 1px solid #000000;
-            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080;
+            max-width: 1100px;
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow);
             background: #ffffff;
         }
 
@@ -121,48 +144,214 @@
             border: none;
             background: #ffffff;
         }
+
+        /* Lock / Expired Screen */
+        .prompt-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow);
+            padding: 32px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .prompt-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .input-control {
+            width: 100%;
+            background: var(--bg);
+            color: var(--text);
+            border: 2px solid var(--border);
+            padding: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            outline: none;
+            margin: 16px 0;
+        }
+
+        .alert-error {
+            background: rgba(220, 38, 38, 0.15);
+            border: 1.5px solid #ef4444;
+            color: #fca5a5;
+            padding: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            display: none;
+            margin-bottom: 12px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(2px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 500;
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 320px;
+            padding: 20px;
+            text-align: center;
+        }
     </style>
+    <script>
+        const savedTheme = localStorage.getItem('apsthira_theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.documentElement.classList.add('light-mode');
+        }
+    </script>
 </head>
 <body>
-    <div class="window">
-        <div class="title-bar">
-            <div class="title-bar-text">{{.Slug}}.pdf - Acrobat Reader</div>
-            <div class="title-bar-controls">
-                <div class="title-bar-button">_</div>
-                <div class="title-bar-button">□</div>
-                <div class="title-bar-button">X</div>
-            </div>
-        </div>
-        <div class="menu-bar">
-            <div class="menu-items">
-                <span>File</span>
-                <span>Document</span>
-                <span>View</span>
-                <span>Window</span>
-                <span>Help</span>
-            </div>
-            
-            <div class="metadata-items">
-                <span>Source: {{.OriginalFilename}}</span>
-                <span>Updated: {{.UpdatedAt.Format "Jan 02, 2006 at 03:04 PM"}}</span>
-            </div>
+    <header>
+        <div class="logo">
+            📄 APSTHIRA <span class="badge">/r/{{.Slug}}</span>
+            <span style="font-size: 12px; font-weight: normal; color: var(--muted); margin-left: 8px;" class="desktop-only">
+                Source: <strong>{{.OriginalFilename}}</strong>
+            </span>
         </div>
 
-        <div class="viewer-container">
-            <div class="iframe-border">
-                <!-- Securely loads the PDF from the raw streaming endpoint -->
-                <iframe src="/r/{{.Slug}}/raw" id="pdf-viewer"></iframe>
+        <div class="actions">
+            <button type="button" class="btn" onclick="toggleTheme()" id="theme-btn">🌙 Dark</button>
+            <button type="button" class="btn" onclick="openShareModal()">📱 Share / QR</button>
+            <button type="button" class="btn" onclick="printPDF()">🖨️ Print</button>
+            {{if .AllowDownload}}
+            <a href="/r/{{.Slug}}/raw?dl=1" class="btn btn-primary" target="_blank">💾 Download PDF</a>
+            {{end}}
+        </div>
+    </header>
+
+    {{if .IsExpired}}
+    <div class="viewer-container">
+        <div class="prompt-card">
+            <div class="prompt-title" style="color: #ef4444;">⚠️ Link Expired</div>
+            <p style="color: var(--muted); margin-bottom: 12px;">
+                This resume link (<strong>/r/{{.Slug}}</strong>) has expired and is no longer available.
+            </p>
+            <p style="font-family: 'JetBrains Mono', monospace; font-size: 11px;">
+                If you are the owner, you can extend or remove expiration from your dashboard.
+            </p>
+        </div>
+    </div>
+
+    {{else if .IsProtected}}
+    <div class="viewer-container">
+        <div class="prompt-card">
+            <div class="prompt-title">🔒 Passcode Protected</div>
+            <p style="color: var(--muted); font-size: 13px;">
+                This resume is passcode protected by the owner. Enter passcode to unlock:
+            </p>
+
+            <div id="unlock-alert" class="alert-error"></div>
+
+            <form id="unlock-form" onsubmit="submitUnlock(event)">
+                <input type="password" id="unlock-passcode" class="input-control" placeholder="Enter passcode" required autofocus>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">
+                    Unlock Document →
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {{else}}
+    <div class="viewer-container">
+        <div class="iframe-border">
+            <iframe src="/r/{{.Slug}}/raw" id="pdf-viewer"></iframe>
+        </div>
+    </div>
+    {{end}}
+
+    <!-- Share Modal -->
+    <div class="modal-overlay" id="share-modal-overlay">
+        <div class="modal">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 12px;">Share & QR Code</h3>
+            <img src="/r/{{.Slug}}/qr" alt="QR Code" style="width: 180px; height: 180px; border: 2px solid var(--border); background: #fff; padding: 6px; margin-bottom: 16px;">
+            <div style="display: flex; gap: 8px; justify-content: center;">
+                <a href="/r/{{.Slug}}/qr" download="{{.Slug}}-qr.png" class="btn btn-primary">Download QR</a>
+                <button type="button" class="btn" onclick="copyLink()">Copy URL</button>
+                <button type="button" class="btn" onclick="closeShareModal()">Close</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Track the view count once the page has fully loaded
+        function updateThemeBtn() {
+            const btn = document.getElementById('theme-btn');
+            const isLight = document.documentElement.classList.contains('light-mode');
+            btn.innerText = isLight ? '☀️ Light' : '🌙 Dark';
+        }
+        function toggleTheme() {
+            document.documentElement.classList.toggle('light-mode');
+            const isLight = document.documentElement.classList.contains('light-mode');
+            localStorage.setItem('apsthira_theme', isLight ? 'light' : 'dark');
+            updateThemeBtn();
+        }
+        updateThemeBtn();
+
+        function openShareModal() { document.getElementById('share-modal-overlay').classList.add('open'); }
+        function closeShareModal() { document.getElementById('share-modal-overlay').classList.remove('open'); }
+
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('Resume link copied to clipboard!');
+            });
+        }
+
+        function printPDF() {
+            const iframe = document.getElementById('pdf-viewer');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.print();
+            } else {
+                window.print();
+            }
+        }
+
+        {{if .IsProtected}}
+        async function submitUnlock(e) {
+            e.preventDefault();
+            const passcode = document.getElementById('unlock-passcode').value;
+            const alertBox = document.getElementById('unlock-alert');
+            alertBox.style.display = 'none';
+
+            try {
+                const res = await fetch('/r/{{.Slug}}/unlock', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ passcode: passcode })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    window.location.reload();
+                } else {
+                    alertBox.innerText = data.error || 'Incorrect passcode.';
+                    alertBox.style.display = 'block';
+                }
+            } catch (err) {
+                alertBox.innerText = 'Server error. Please try again.';
+                alertBox.style.display = 'block';
+            }
+        }
+        {{end}}
+
+        {{if not .IsProtected}}{{if not .IsExpired}}
         window.addEventListener('load', () => {
-            fetch('/r/{{.Slug}}/view', {
-                method: 'POST'
-            }).catch(err => console.error('Failed to register view:', err));
+            fetch('/r/{{.Slug}}/view', { method: 'POST' }).catch(() => {});
         });
+        {{end}}{{end}}
     </script>
 </body>
 </html>

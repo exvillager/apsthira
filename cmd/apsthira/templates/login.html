@@ -3,194 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Apsthira</title>
+    <title>Login — Apsthira</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #121214;
+            --card-bg: #1c1c20;
+            --text: #f4f4f5;
+            --muted: #a1a1aa;
+            --border: #f4f4f5;
+            --accent: #fbbf24;
+            --shadow: 4px 4px 0px #000000;
+            --shadow-hover: 6px 6px 0px #000000;
+        }
+
+        html.light-mode {
+            --bg: #faf8f5;
+            --card-bg: #ffffff;
+            --text: #1c1917;
+            --muted: #78716c;
+            --border: #1c1917;
+            --accent: #d97706;
+            --shadow: 4px 4px 0px #1c1917;
+            --shadow-hover: 6px 6px 0px #1c1917;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background-color: #008080;
-            margin: 0;
-            padding: 0;
-            font-family: Tahoma, Arial, sans-serif;
-            font-size: 13px;
-            color: #000000;
-            height: 100vh;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 14px;
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 20px;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
-        .window {
-            background: #c0c0c0;
-            width: 320px;
-            max-width: 95%;
-            border: 1px solid #000000;
-            box-shadow: inset 1.5px 1.5px 0px 0px #ffffff, inset -1.5px -1.5px 0px 0px #808080, 1px 1px 0px 0px #000000;
+        .auth-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 380px;
+            padding: 32px;
+            position: relative;
         }
 
-        .title-bar {
-            background: linear-gradient(90deg, #000080, #1084d0);
-            color: #ffffff;
-            padding: 3px 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            font-size: 12px;
-            margin: 2px 2px 0 2px;
-        }
-
-        .title-bar-controls {
-            display: flex;
-            gap: 2px;
-        }
-
-        .title-bar-button {
-            width: 16px;
-            height: 14px;
-            background: #c0c0c0;
-            border: 1px solid #000000;
-            box-shadow: inset 1px 1px 0px 0px #ffffff, inset -1px -1px 0px 0px #808080;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            font-weight: bold;
-            color: #000000;
+        .theme-toggle-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: var(--bg);
+            color: var(--text);
+            border: 1.5px solid var(--border);
+            padding: 2px 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
             cursor: pointer;
-            user-select: none;
         }
 
-        .title-bar-button:active {
-            box-shadow: inset 1px 1px 0px 0px #808080, inset -1px -1px 0px 0px #ffffff;
+        .auth-header {
+            margin-bottom: 24px;
+            text-align: center;
         }
 
-        .window-body {
-            padding: 16px;
+        .logo-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .auth-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .alert {
+            background: rgba(220, 38, 38, 0.15);
+            border: 1.5px solid #ef4444;
+            color: #fca5a5;
+            padding: 10px 12px;
+            font-size: 12px;
+            margin-bottom: 20px;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 4px;
-            font-weight: bold;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            text-transform: uppercase;
         }
 
         .form-control {
             width: 100%;
-            background: #ffffff;
-            color: #000000;
-            border: 1px solid #808080;
-            box-shadow: inset 1px 1px 0px 0px #000000, inset -1px -1px 0px 0px #ffffff;
-            padding: 4px 6px;
+            background: var(--bg);
+            color: var(--text);
+            border: 2px solid var(--border);
+            padding: 10px 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
             outline: none;
-            box-sizing: border-box;
+            transition: border-color 0.15s ease;
         }
 
         .form-control:focus {
-            outline: 1px dotted #000000;
+            border-color: var(--accent);
+            box-shadow: 2px 2px 0px var(--accent);
         }
 
         .btn-submit {
-            background: #c0c0c0;
-            color: #000000;
-            border: 1px solid #000000;
-            box-shadow: inset 1px 1px 0px 0px #ffffff, inset -1px -1px 0px 0px #808080;
-            padding: 4px 16px;
-            font-size: 12px;
-            font-family: Tahoma, Arial, sans-serif;
-            cursor: pointer;
             width: 100%;
-            margin-top: 8px;
-            outline: none;
-        }
-
-        .btn-submit:active {
-            box-shadow: inset 1px 1px 0px 0px #808080, inset -1px -1px 0px 0px #ffffff;
-        }
-        
-        .btn-submit:focus {
-            outline: 1px dotted #000000;
-            outline-offset: -4px;
-        }
-
-        .alert {
-            background: #ffffff;
-            border: 1px solid #000000;
-            box-shadow: inset 1px 1px 0px 0px #808080, inset -1px -1px 0px 0px #ffffff;
-            color: #ff0000;
-            padding: 8px;
-            margin-bottom: 12px;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .alert::before {
-            content: '⚠️';
+            font-family: 'JetBrains Mono', monospace;
             font-size: 14px;
+            font-weight: 700;
+            color: var(--bg);
+            background: var(--text);
+            border: 2px solid var(--border);
+            padding: 12px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            margin-top: 8px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
 
-        .footer-text {
-            margin-top: 12px;
+        .btn-submit:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: var(--shadow-hover);
+            background: var(--accent);
+            color: #000000;
+        }
+
+        .auth-footer {
+            margin-top: 24px;
             text-align: center;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
+            color: var(--muted);
         }
 
-        .footer-text a {
-            color: #0000ee;
+        .auth-footer a {
+            color: var(--text);
+            font-weight: 600;
             text-decoration: underline;
         }
-
-        footer {
-            margin-top: 16px;
-            text-align: center;
-            font-size: 10px;
-            color: #808080;
-            text-shadow: 1px 1px 0px #ffffff;
-        }
     </style>
+    <script>
+        const savedTheme = localStorage.getItem('apsthira_theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.documentElement.classList.add('light-mode');
+        }
+    </script>
 </head>
 <body>
-    <div class="window">
-        <div class="title-bar">
-            <div class="title-bar-text">Enter Network Password</div>
-            <div class="title-bar-controls">
-                <div class="title-bar-button">?</div>
-                <div class="title-bar-button">X</div>
-            </div>
+    <div class="auth-card">
+        <button type="button" class="theme-toggle-btn" id="theme-btn" onclick="toggleTheme()">🌙 Dark</button>
+
+        <div class="auth-header">
+            <h1 class="logo-title">📄 APSTHIRA</h1>
+            <div class="auth-subtitle">AUTHENTICATION CONSOLE</div>
         </div>
-        <div class="window-body">
-            {{if .Error}}
-            <div class="alert">
-                {{.Error}}
+
+        {{if .Error}}
+        <div class="alert">
+            ⚠️ {{.Error}}
+        </div>
+        {{end}}
+
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="enter username" required autocomplete="username">
             </div>
-            {{end}}
 
-            <form action="/login" method="POST">
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" required autocomplete="username">
-                </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+            </div>
 
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
-                </div>
+            <button type="submit" class="btn-submit">LOGIN CONSOLE →</button>
+        </form>
 
-                <button type="submit" class="btn-submit">OK</button>
-            </form>
-            
-            <p class="footer-text">
-                Need a login profile? <a href="/register">Register here</a>
-            </p>
-            
-            <footer>
-                Apsthira Authentication Service
-            </footer>
+        <div class="auth-footer">
+            <p><a href="/">← Return to Home</a></p>
         </div>
     </div>
+
+    <script>
+        function updateThemeBtn() {
+            const btn = document.getElementById('theme-btn');
+            const isLight = document.documentElement.classList.contains('light-mode');
+            btn.innerText = isLight ? '☀️ Light' : '🌙 Dark';
+        }
+        function toggleTheme() {
+            document.documentElement.classList.toggle('light-mode');
+            const isLight = document.documentElement.classList.contains('light-mode');
+            localStorage.setItem('apsthira_theme', isLight ? 'light' : 'dark');
+            updateThemeBtn();
+        }
+        updateThemeBtn();
+    </script>
 </body>
 </html>

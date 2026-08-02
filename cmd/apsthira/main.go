@@ -27,8 +27,8 @@ import (
 var templatesFS embed.FS
 
 func main() {
-	logger.Init()
 	_ = godotenv.Load()
+	logger.Init(config.GetEnv("LOG_PATH", "logs/apsthira.log"))
 
 	// Check if sync command is requested
 	if len(os.Args) > 1 && (os.Args[1] == "--sync" || os.Args[1] == "--sync-push" || os.Args[1] == "--sync-pull") {
@@ -154,6 +154,8 @@ func main() {
 	r.Use(metrics.Middleware())
 	r.Use(middleware.RateLimit(middleware.NewIPRateLimiter(rate.Limit(15), 30)))
 
+	r.GET("/health", h.HandleHealth)
+
 	r.GET("/", h.LoadUser, h.HandleIndex)
 
 	r.GET("/login", h.LoadUser, h.HandleLoginGet)
@@ -168,14 +170,22 @@ func main() {
 	r.POST("/r/:slug/update", h.RequireAuth, h.HandleUpdateResume)
 	r.POST("/r/:slug/delete", h.RequireAuth, h.HandleDeleteResume)
 
+	r.GET("/r/:slug/analytics", h.RequireAuth, h.HandleGetAnalytics)
+	r.GET("/r/:slug/versions", h.RequireAuth, h.HandleGetVersions)
+	r.POST("/r/:slug/rollback", h.RequireAuth, h.HandleRollbackVersion)
+	r.POST("/r/:slug/settings", h.RequireAuth, h.HandleUpdateSettings)
+	r.POST("/r/:slug/unlock", h.HandleUnlockResume)
+	r.GET("/r/:slug/qr", h.HandleGetQRCode)
+
 	r.GET("/r/:slug", h.HandleViewResume)
 	r.GET("/r/:slug/raw", h.HandleStreamResume)
 	r.POST("/r/:slug/view", h.HandleIncrementViewCount)
 
 	r.GET("/metrics", metrics.Handler())
 
-	slog.Info("server listening", "url", "http://127.0.0.1:"+port)
-	if err := r.Run("127.0.0.1:" + port); err != nil {
+	host := config.GetEnv("HOST", "0.0.0.0")
+	slog.Info("server listening", "url", "http://"+host+":"+port)
+	if err := r.Run(host + ":" + port); err != nil {
 		slog.Error("server listen failed", "error", err)
 		os.Exit(1)
 	}

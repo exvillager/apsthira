@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -83,13 +84,21 @@ func (h *Handler) HandleLoginPost(c *nanoserve.Context) error {
 	return nil
 }
 
+func (h *Handler) isRegistrationAllowed() bool {
+	return strings.ToLower(os.Getenv("ALLOW_REGISTRATION")) == "true"
+}
+
 func (h *Handler) HandleRegisterGet(c *nanoserve.Context) error {
 	if h.mustGetUser(c) != nil {
 		c.Redirect("/dashboard", http.StatusSeeOther)
 		return nil
 	}
+	data := map[string]any{}
+	if !h.isRegistrationAllowed() {
+		data["Error"] = "Public user registration is currently disabled to prevent bot abuse."
+	}
 	c.SetHeader("Content-Type", "text/html; charset=utf-8")
-	return h.Tmpl.ExecuteTemplate(c.Writer, "register.html", nil)
+	return h.Tmpl.ExecuteTemplate(c.Writer, "register.html", data)
 }
 
 func (h *Handler) HandleRegisterPost(c *nanoserve.Context) error {
@@ -97,9 +106,17 @@ func (h *Handler) HandleRegisterPost(c *nanoserve.Context) error {
 		c.Redirect("/dashboard", http.StatusSeeOther)
 		return nil
 	}
+
+	data := map[string]any{}
+	if !h.isRegistrationAllowed() {
+		data["Error"] = "Public user registration is currently disabled to prevent bot abuse."
+		c.Status(http.StatusForbidden)
+		c.SetHeader("Content-Type", "text/html; charset=utf-8")
+		return h.Tmpl.ExecuteTemplate(c.Writer, "register.html", data)
+	}
+
 	username := strings.ToLower(strings.TrimSpace(c.Request.FormValue("username")))
 	password := c.Request.FormValue("password")
-	data := map[string]any{}
 
 	if username == "" || password == "" {
 		data["Error"] = "Username and password are required."

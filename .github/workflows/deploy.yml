@@ -9,7 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Pull, build and restart via pm2
+      - name: Build and deploy via Docker
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -21,4 +21,5 @@ jobs:
             cd /srv/apps/apsthira
             git pull origin main
             ./build.sh
-            ./pm2.sh
+            docker compose up -d --build
+            docker compose ps
