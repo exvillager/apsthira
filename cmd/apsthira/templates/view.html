@@ -132,7 +132,6 @@
         .iframe-border {
             width: 100%;
             height: 100%;
-            max-width: 1100px;
             border: 2px solid var(--border);
             box-shadow: var(--shadow);
             background: #ffffff;
@@ -143,6 +142,37 @@
             height: 100%;
             border: none;
             background: #ffffff;
+        }
+
+        .mobile-open-link {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            text-align: center;
+            padding: 24px;
+        }
+
+        .mobile-open-link p {
+            color: var(--muted);
+            font-size: 13px;
+            max-width: 260px;
+        }
+
+        @media (max-width: 768px), (pointer: coarse) {
+            .iframe-border {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            iframe {
+                display: none;
+            }
+
+            .mobile-open-link {
+                display: flex;
+            }
         }
 
         /* Lock / Expired Screen */
@@ -271,6 +301,12 @@
     <div class="viewer-container">
         <div class="iframe-border">
             <iframe src="/r/{{.Slug}}/raw" id="pdf-viewer"></iframe>
+
+            <!-- Mobile browsers generally can't render PDFs inside an iframe, so link straight to the file instead -->
+            <div class="mobile-open-link">
+                <p>Your browser can't preview PDFs inline on mobile.</p>
+                <a href="/r/{{.Slug}}/raw" class="btn btn-primary">📄 Open {{.OriginalFilename}}</a>
+            </div>
         </div>
     </div>
     {{end}}
